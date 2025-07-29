@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { authService } from "./lib/auth";
 import { useEffect, useState } from "react";
+import Layout from "@/components/layout";
 
 import Dashboard from "@/pages/dashboard";
 import Login from "@/pages/login";
@@ -40,14 +41,16 @@ function Router() {
   }
 
   return (
-    <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/sensors" component={Sensors} />
-      <Route path="/history" component={History} />
-      <Route path="/thresholds" component={Thresholds} />
-      <Route component={NotFound} />
-    </Switch>
+    <Layout>
+      <Switch>
+        <Route path="/" component={Dashboard} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/sensors" component={Sensors} />
+        <Route path="/history" component={History} />
+        <Route path="/thresholds" component={Thresholds} />
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   );
 }
 

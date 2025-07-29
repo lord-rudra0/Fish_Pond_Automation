@@ -7,8 +7,7 @@ import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
+
 import SensorCard from "@/components/sensor-card";
 import AlertsPanel from "@/components/alerts-panel";
 import SensorChart from "@/components/sensor-chart";
@@ -74,10 +73,7 @@ export default function Dashboard() {
   const criticalAlerts = unacknowledgedAlerts.filter(alert => alert.severity === 'critical');
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background">
-      <Navbar />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="space-y-8">
         {/* Dashboard Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -327,9 +323,6 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         </div>
-      </main>
-
-      <Footer />
     </div>
   );
 }

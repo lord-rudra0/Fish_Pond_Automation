@@ -3,59 +3,61 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(240, 10%, 3.9%);
-  --muted: hsl(240, 4.8%, 95.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
+  --background: hsl(210, 40%, 98%);
+  --foreground: hsl(215, 25%, 27%);
+  --muted: hsl(210, 40%, 96%);
+  --muted-foreground: hsl(215, 16%, 47%);
   --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(215, 25%, 27%);
   --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(240, 10%, 3.9%);
-  --border: hsl(240, 5.9%, 90%);
-  --input: hsl(240, 5.9%, 90%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(0, 0%, 98%);
-  --secondary: hsl(120, 43%, 44%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(39, 100%, 48%);
-  --accent-foreground: hsl(0, 0%, 98%);
+  --card-foreground: hsl(215, 25%, 27%);
+  --border: hsl(214, 32%, 91%);
+  --input: hsl(214, 32%, 91%);
+  --primary: hsl(200, 98%, 39%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  --secondary: hsl(200, 50%, 90%);
+  --secondary-foreground: hsl(215, 25%, 27%);
+  --accent: hsl(200, 50%, 90%);
+  --accent-foreground: hsl(215, 25%, 27%);
   --destructive: hsl(0, 84%, 60%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 10%, 3.9%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(200, 98%, 39%);
   --radius: 0.75rem;
   
-  /* Custom colors for fish pond system */
-  --surface: hsl(0, 0%, 100%);
-  --surface-foreground: hsl(240, 10%, 3.9%);
-  --background-light: hsl(240, 5%, 98%);
+  /* Custom cool colors for fish pond system */
+  --surface: hsl(210, 40%, 98%);
+  --surface-foreground: hsl(215, 25%, 27%);
+  --background-light: hsl(210, 50%, 96%);
   --error: hsl(0, 84%, 60%);
-  --warning: hsl(39, 100%, 48%);
-  --success: hsl(120, 43%, 44%);
+  --warning: hsl(45, 93%, 58%);
+  --success: hsl(160, 84%, 39%);
+  --info: hsl(200, 98%, 39%);
 }
 
 .dark {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(0, 0%, 98%);
-  --secondary: hsl(240, 3.7%, 15.9%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(240, 3.7%, 15.9%);
-  --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
-  --surface: hsl(240, 10%, 3.9%);
-  --surface-foreground: hsl(0, 0%, 98%);
-  --background-light: hsl(240, 8%, 6%);
+  --background: hsl(215, 28%, 17%);
+  --foreground: hsl(210, 40%, 98%);
+  --muted: hsl(215, 32%, 27%);
+  --muted-foreground: hsl(215, 20%, 65%);
+  --popover: hsl(215, 28%, 17%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --card: hsl(215, 28%, 17%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --border: hsl(215, 32%, 27%);
+  --input: hsl(215, 32%, 27%);
+  --primary: hsl(200, 98%, 50%);
+  --primary-foreground: hsl(215, 28%, 17%);
+  --secondary: hsl(215, 32%, 27%);
+  --secondary-foreground: hsl(210, 40%, 98%);
+  --accent: hsl(215, 32%, 27%);
+  --accent-foreground: hsl(210, 40%, 98%);
+  --destructive: hsl(0, 63%, 31%);
+  --destructive-foreground: hsl(210, 40%, 98%);
+  --ring: hsl(200, 98%, 50%);
+  --surface: hsl(215, 28%, 17%);
+  --surface-foreground: hsl(210, 40%, 98%);
+  --background-light: hsl(215, 25%, 12%);
+  --info: hsl(200, 98%, 50%);
 }
 
 @layer base {
@@ -72,15 +74,34 @@
 @layer components {
   .sensor-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--accent)) 100%);
   }
   
   .sensor-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px hsl(var(--primary) / 0.15);
   }
   
   .status-indicator {
     position: relative;
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(135deg, hsl(210 50% 98%) 0%, hsl(200 50% 95%) 100%);
+  }
+  
+  .dark .gradient-bg {
+    background: linear-gradient(135deg, hsl(215 28% 17%) 0%, hsl(215 25% 12%) 100%);
+  }
+  
+  .cool-card {
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(200 50% 98%) 100%);
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
+  }
+  
+  .dark .cool-card {
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(215 25% 20%) 100%);
   }
   
   .status-indicator::before {

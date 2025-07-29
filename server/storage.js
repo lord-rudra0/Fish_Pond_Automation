@@ -1,13 +1,13 @@
-const { drizzle } = require("drizzle-orm/neon-http");
-const { neon } = require("@neondatabase/serverless");
-const { eq, desc, and, gte, lte } = require("drizzle-orm");
-const { 
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { eq, desc, and, gte, lte } from "drizzle-orm";
+import { 
   users, 
   sensorData, 
   thresholds, 
   alerts
-} = require("../shared/schema");
-const bcrypt = require("bcrypt");
+} from "../shared/schema.js";
+import bcrypt from "bcrypt";
 
 const DATABASE_URL = process.env.DATABASE_URL;
 
@@ -132,4 +132,4 @@ class DatabaseStorage {
 
 const storage = new DatabaseStorage();
 
-module.exports = { storage };
+export { storage };

@@ -1,7 +1,7 @@
-const { sql } = require("drizzle-orm");
-const { pgTable, text, varchar, timestamp, real, boolean, serial } = require("drizzle-orm/pg-core");
-const { createInsertSchema } = require("drizzle-zod");
-const { z } = require("zod");
+import { sql } from "drizzle-orm";
+import { pgTable, text, varchar, timestamp, real, boolean, serial } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 
 const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -63,7 +63,7 @@ const insertAlertSchema = createInsertSchema(alerts).omit({
   timestamp: true,
 });
 
-module.exports = {
+export {
   users,
   sensorData,
   thresholds,

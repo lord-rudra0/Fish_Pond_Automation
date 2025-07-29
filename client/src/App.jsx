@@ -1,18 +1,15 @@
 import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
+import { queryClient } from "./lib/queryClient.js";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { authService } from "./lib/auth";
+import { authService } from "./lib/auth.js";
 import { useEffect, useState } from "react";
-import Layout from "@/components/layout";
 
 import Dashboard from "@/pages/dashboard";
 import Login from "@/pages/login";
 import Signup from "@/pages/signup";
 import Thresholds from "@/pages/thresholds";
-import Sensors from "@/pages/sensors";
-import History from "@/pages/history";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -41,16 +38,12 @@ function Router() {
   }
 
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Dashboard} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/sensors" component={Sensors} />
-        <Route path="/history" component={History} />
-        <Route path="/thresholds" component={Thresholds} />
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      <Route path="/" component={Dashboard} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/thresholds" component={Thresholds} />
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 

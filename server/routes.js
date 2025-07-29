@@ -1,7 +1,7 @@
-const { createServer } = require("http");
-const { storage } = require("./storage");
-const { insertUserSchema, insertSensorDataSchema, insertThresholdSchema } = require("../shared/schema");
-const jwt = require("jsonwebtoken");
+import { createServer } from "http";
+import { storage } from "./storage.js";
+import { insertUserSchema, insertSensorDataSchema, insertThresholdSchema } from "../shared/schema.js";
+import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -275,4 +275,4 @@ async function registerRoutes(app) {
   return httpServer;
 }
 
-module.exports = { registerRoutes };
+export { registerRoutes };

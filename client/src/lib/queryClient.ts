@@ -1,4 +1,5 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { authService } from "./auth";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -12,11 +13,18 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  const headers: Record<string, string> = {
+    ...authService.getAuthHeaders()
+  };
+  
+  if (data) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
   });
 
   await throwIfResNotOk(res);
@@ -29,8 +37,41 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
-      credentials: "include",
+    // Handle query parameters from queryKey
+    let url = '';
+    const params: Record<string, any> = {};
+    
+    // Separate URL parts from parameters
+    queryKey.forEach((part, index) => {
+      if (typeof part === 'string') {
+        if (index === 0) {
+          url = part;
+        } else {
+          url += '/' + part;
+        }
+      } else if (typeof part === 'object' && part !== null) {
+        Object.assign(params, part);
+      }
+    });
+    
+    // Add query parameters if they exist
+    if (Object.keys(params).length > 0) {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+      const paramString = searchParams.toString();
+      if (paramString) {
+        url += `?${paramString}`;
+      }
+    }
+
+    const res = await fetch(url, {
+      headers: {
+        ...authService.getAuthHeaders()
+      }
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {

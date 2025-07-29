@@ -1,75 +1,82 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, real, boolean, serial } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+import mongoose from "mongoose";
 import { z } from "zod";
 
-const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  email: text("email").notNull().unique(),
-  password: text("password").notNull(),
-  name: text("name").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+// User Schema
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  name: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
 });
 
-const sensorData = pgTable("sensor_data", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").references(() => users.id).notNull(),
-  ph: real("ph"),
-  waterLevel: real("water_level"),
-  temperature: real("temperature"),
-  nh3: real("nh3"),
-  turbidity: real("turbidity"),
-  timestamp: timestamp("timestamp").defaultNow().notNull(),
+// Sensor Data Schema
+const sensorDataSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  ph: { type: Number },
+  waterLevel: { type: Number },
+  temperature: { type: Number },
+  nh3: { type: Number },
+  turbidity: { type: Number },
+  timestamp: { type: Date, default: Date.now }
 });
 
-const thresholds = pgTable("thresholds", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").references(() => users.id).notNull(),
-  sensorType: text("sensor_type").notNull(), // 'ph', 'waterLevel', 'temperature', 'nh3', 'turbidity'
-  minValue: real("min_value"),
-  maxValue: real("max_value"),
-  alertEnabled: boolean("alert_enabled").default(true).notNull(),
+// Thresholds Schema
+const thresholdSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  sensorType: { type: String, required: true }, // 'ph', 'waterLevel', 'temperature', 'nh3', 'turbidity'
+  minValue: { type: Number },
+  maxValue: { type: Number },
+  alertEnabled: { type: Boolean, default: true }
 });
 
-const alerts = pgTable("alerts", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").references(() => users.id).notNull(),
-  sensorType: text("sensor_type").notNull(),
-  message: text("message").notNull(),
-  severity: text("severity").notNull(), // 'normal', 'warning', 'critical'
-  value: real("value"),
-  threshold: real("threshold"),
-  acknowledged: boolean("acknowledged").default(false).notNull(),
-  timestamp: timestamp("timestamp").defaultNow().notNull(),
+// Alerts Schema
+const alertSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  sensorType: { type: String, required: true },
+  message: { type: String, required: true },
+  severity: { type: String, required: true }, // 'normal', 'warning', 'critical'
+  value: { type: Number },
+  threshold: { type: Number },
+  acknowledged: { type: Boolean, default: false },
+  timestamp: { type: Date, default: Date.now }
 });
 
-const insertUserSchema = createInsertSchema(users).pick({
-  email: true,
-  password: true,
-  name: true,
+// Create models
+export const User = mongoose.model('User', userSchema);
+export const SensorData = mongoose.model('SensorData', sensorDataSchema);
+export const Threshold = mongoose.model('Threshold', thresholdSchema);
+export const Alert = mongoose.model('Alert', alertSchema);
+
+// Zod schemas for validation
+export const insertUserSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  name: z.string().min(1)
 });
 
-const insertSensorDataSchema = createInsertSchema(sensorData).omit({
-  id: true,
-  timestamp: true,
+export const insertSensorDataSchema = z.object({
+  userId: z.string(),
+  ph: z.number().optional(),
+  waterLevel: z.number().optional(),
+  temperature: z.number().optional(),
+  nh3: z.number().optional(),
+  turbidity: z.number().optional()
 });
 
-const insertThresholdSchema = createInsertSchema(thresholds).omit({
-  id: true,
+export const insertThresholdSchema = z.object({
+  userId: z.string(),
+  sensorType: z.string(),
+  minValue: z.number().optional(),
+  maxValue: z.number().optional(),
+  alertEnabled: z.boolean().default(true)
 });
 
-const insertAlertSchema = createInsertSchema(alerts).omit({
-  id: true,
-  timestamp: true,
+export const insertAlertSchema = z.object({
+  userId: z.string(),
+  sensorType: z.string(),
+  message: z.string(),
+  severity: z.string(),
+  value: z.number().optional(),
+  threshold: z.number().optional(),
+  acknowledged: z.boolean().default(false)
 });
-
-export {
-  users,
-  sensorData,
-  thresholds,
-  alerts,
-  insertUserSchema,
-  insertSensorDataSchema,
-  insertThresholdSchema,
-  insertAlertSchema
-};

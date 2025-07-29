@@ -3,7 +3,7 @@ import { storage } from "./storage.js";
 import { insertUserSchema, insertSensorDataSchema, insertThresholdSchema } from "../shared/schema.js";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+const JWT_SECRET = "your-secret-key-here-change-this-in-production";
 
 // Middleware to verify JWT token
 const authenticateToken = (req, res, next) => {
@@ -186,7 +186,7 @@ async function registerRoutes(app) {
 
   app.put("/api/thresholds/:id", authenticateToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const updateData = req.body;
       
       const threshold = await storage.updateThreshold(id, updateData);
@@ -202,7 +202,7 @@ async function registerRoutes(app) {
 
   app.delete("/api/thresholds/:id", authenticateToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const deleted = await storage.deleteThreshold(id);
       
       if (!deleted) {
@@ -237,7 +237,7 @@ async function registerRoutes(app) {
 
   app.put("/api/alerts/:id/acknowledge", authenticateToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const acknowledged = await storage.acknowledgeAlert(id);
       
       if (!acknowledged) {

@@ -1,8 +1,17 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./storage-sqlite";
 import { insertUserSchema, insertSensorDataSchema, insertThresholdSchema } from "@shared/schema";
 import jwt from "jsonwebtoken";
+
+// Extend Express Request type to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
+}
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 

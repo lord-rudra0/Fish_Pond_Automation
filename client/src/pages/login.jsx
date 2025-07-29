@@ -40,7 +40,8 @@ export default function Login() {
         title: "Welcome back!",
         description: "You have been successfully logged in.",
       });
-      setLocation("/dashboard");
+      // Force a page reload to update authentication state
+      window.location.href = "/dashboard";
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
     } finally {

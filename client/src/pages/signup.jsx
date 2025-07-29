@@ -53,7 +53,8 @@ export default function Signup() {
         title: "Account created!",
         description: "Welcome to AquaWatch. You can now start monitoring your pond.",
       });
-      setLocation("/dashboard");
+      // Force a page reload to update authentication state
+      window.location.href = "/dashboard";
     } catch (err) {
       setError(err.message || "Registration failed. Please try again.");
     } finally {

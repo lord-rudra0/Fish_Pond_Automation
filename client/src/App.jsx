@@ -10,6 +10,8 @@ import Dashboard from "@/pages/dashboard";
 import Login from "@/pages/login";
 import Signup from "@/pages/signup";
 import Thresholds from "@/pages/thresholds";
+import Sensors from "@/pages/sensors";
+import History from "@/pages/history";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -41,6 +43,8 @@ function Router() {
     <Switch>
       <Route path="/" component={Dashboard} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/sensors" component={Sensors} />
+      <Route path="/history" component={History} />
       <Route path="/thresholds" component={Thresholds} />
       <Route component={NotFound} />
     </Switch>

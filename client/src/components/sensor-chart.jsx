@@ -69,13 +69,13 @@ export default function SensorChart() {
 
   if (isLoading) {
     return (
-      <Card className="bg-surface dark:bg-card">
+      <Card className="bg-white dark:bg-gray-900">
         <CardHeader>
-          <CardTitle>24-Hour Trends</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-white">24-Hour Trends</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[300px] flex items-center justify-center">
-            <div className="animate-pulse text-gray-500">Loading chart data...</div>
+            <div className="animate-pulse text-gray-600 dark:text-gray-300">Loading chart data...</div>
           </div>
         </CardContent>
       </Card>
@@ -84,16 +84,16 @@ export default function SensorChart() {
 
   if (error) {
     return (
-      <Card className="bg-surface dark:bg-card">
+      <Card className="bg-white dark:bg-gray-900">
         <CardHeader>
-          <CardTitle>24-Hour Trends</CardTitle>
+          <CardTitle className="text-gray-900 dark:text-white">24-Hour Trends</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[300px] flex items-center justify-center">
             <div className="text-center text-red-500">
               <div className="text-4xl mb-4">⚠️</div>
-              <p className="text-lg font-medium">Error Loading Data</p>
-              <p className="text-sm opacity-75">{error.message || 'Failed to load sensor data'}</p>
+              <p className="text-lg font-medium text-gray-900 dark:text-white">Error Loading Data</p>
+              <p className="text-sm opacity-75 text-gray-600 dark:text-gray-300">{error.message || 'Failed to load sensor data'}</p>
             </div>
           </div>
         </CardContent>
@@ -102,9 +102,9 @@ export default function SensorChart() {
   }
 
   return (
-    <Card className="bg-surface dark:bg-card">
+    <Card className="bg-white dark:bg-gray-900">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-semibold">24-Hour Trends</CardTitle>
+        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">24-Hour Trends</CardTitle>
         <div className="flex space-x-2">
           {Object.keys(sensorLabels).map(sensor => (
             <Button
@@ -112,7 +112,11 @@ export default function SensorChart() {
               size="sm"
               variant={selectedSensor === sensor ? "default" : "outline"}
               onClick={() => setSelectedSensor(sensor)}
-              className="text-xs px-3 py-1"
+              className={`text-xs px-3 py-1 ${
+                selectedSensor === sensor 
+                  ? "bg-blue-600 hover:bg-blue-700 text-white" 
+                  : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
+              }`}
             >
               {sensor.charAt(0).toUpperCase() + sensor.slice(1)}
             </Button>
@@ -124,8 +128,8 @@ export default function SensorChart() {
           <div className="h-[300px] flex items-center justify-center text-gray-500 dark:text-gray-400">
             <div className="text-center">
               <div className="text-4xl mb-4 opacity-75">📊</div>
-              <p className="text-lg font-medium">No Data Available</p>
-              <p className="text-sm opacity-75">No sensor readings found for the selected time range</p>
+              <p className="text-lg font-medium text-gray-900 dark:text-white">No Data Available</p>
+              <p className="text-sm opacity-75 text-gray-600 dark:text-gray-300">No sensor readings found for the selected time range</p>
             </div>
           </div>
         ) : (

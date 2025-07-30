@@ -93,26 +93,26 @@ function WeatherWidget() {
     setShowLocationInput(false);
   };
   
-  if (loading) return <div className="text-sm text-gray-400">Loading weather...</div>;
-  if (error) return <div className="text-sm text-red-400">Weather: {error}</div>;
-  if (!weather || !weather.current) return <div className="text-sm text-red-400">Weather data unavailable</div>;
+  if (loading) return <div className="text-sm text-gray-600 dark:text-gray-300">Loading weather...</div>;
+  if (error) return <div className="text-sm text-red-600 dark:text-red-400">Weather: {error}</div>;
+  if (!weather || !weather.current) return <div className="text-sm text-red-600 dark:text-red-400">Weather data unavailable</div>;
   
   return (
-    <div className="relative flex items-center space-x-4 bg-white/80 dark:bg-gray-800/80 rounded-lg px-4 py-2 shadow">
+    <div className="relative flex items-center space-x-4 bg-white/80 dark:bg-gray-900/80 rounded-lg px-4 py-2 shadow">
       {/* Weather Icon & Temperature */}
       <div className="flex items-center space-x-2">
         <img src={weather.current.condition.icon} alt={weather.current.condition.text} className="h-8 w-8" />
-        <span className="text-xl font-semibold text-gray-800 dark:text-gray-100">{weather.current.temp_c}°C</span>
+        <span className="text-xl font-semibold text-gray-800 dark:text-white">{weather.current.temp_c}°C</span>
       </div>
       
       {/* Weather Condition */}
       <div className="flex items-center space-x-2">
-        <span className="text-sm text-gray-600 dark:text-gray-300 capitalize">{weather.current.condition.text}</span>
+        <span className="text-sm text-gray-600 dark:text-gray-200 capitalize">{weather.current.condition.text}</span>
       </div>
       
       {/* Location Info */}
       <div className="flex items-center space-x-2">
-        <span className="text-sm text-gray-500 dark:text-gray-400">{weather.location.name}</span>
+        <span className="text-sm text-gray-500 dark:text-gray-300">{weather.location.name}</span>
         {customCity ? (
           <span className="text-xs text-blue-500">📍 Custom</span>
         ) : location && location.lat && location.lon ? (
@@ -123,7 +123,7 @@ function WeatherWidget() {
       </div>
       
       {/* Additional Weather Data */}
-      <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-300">
         <span>💧 {weather.current.humidity}%</span>
         <span>💨 {weather.current.wind_speed} m/s</span>
         <span>📊 {weather.current.pressure} hPa</span>
@@ -151,14 +151,14 @@ function WeatherWidget() {
       
       {/* Location Input (appears below when active) */}
       {showLocationInput && (
-        <div className="absolute top-full left-0 right-0 mt-2 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600">
+        <div className="absolute top-full left-0 right-0 mt-2 p-3 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
           <form onSubmit={handleCustomCitySubmit} className="flex space-x-2">
             <input
               type="text"
               value={customCity}
               onChange={(e) => setCustomCity(e.target.value)}
               placeholder="Enter city name..."
-              className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               autoFocus
             />
             <button
@@ -272,8 +272,8 @@ export default function Dashboard() {
         {/* Sensor Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
           <div className="col-span-full mb-4">
-            <h3 className="text-2xl font-bold text-foreground mb-2">Sensor Status</h3>
-            <p className="text-muted-foreground">Real-time monitoring of all pond parameters</p>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Sensor Status</h3>
+            <p className="text-gray-600 dark:text-gray-300">Real-time monitoring of all pond parameters</p>
           </div>
           <SensorCard
             type="ph"
@@ -423,9 +423,9 @@ export default function Dashboard() {
                 <div className="p-3 rounded-xl ocean-gradient">
                   <span className="text-xl text-white">⚙️</span>
                 </div>
-                <h3 className="ml-4 text-lg font-semibold text-foreground">Configure Thresholds</h3>
+                <h3 className="ml-4 text-lg font-semibold text-gray-900 dark:text-white">Configure Thresholds</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">Set custom threshold values for each sensor type to receive timely alerts.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Set custom threshold values for each sensor type to receive timely alerts.</p>
               <Button className="w-full ocean-gradient text-white hover:shadow-lg hover:shadow-ocean-blue/25 transition-all duration-300">
                 Open Settings
               </Button>
@@ -438,9 +438,9 @@ export default function Dashboard() {
                 <div className="p-3 rounded-xl seafoam-gradient">
                   <span className="text-xl text-white">📊</span>
                 </div>
-                <h3 className="ml-4 text-lg font-semibold text-foreground">Historical Reports</h3>
+                <h3 className="ml-4 text-lg font-semibold text-gray-900 dark:text-white">Historical Reports</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">View detailed historical data and generate reports for pond management.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">View detailed historical data and generate reports for pond management.</p>
               <Button className="w-full seafoam-gradient text-white hover:shadow-lg hover:shadow-seafoam/25 transition-all duration-300">
                 View Reports
               </Button>
@@ -453,9 +453,9 @@ export default function Dashboard() {
                 <div className="p-3 rounded-xl coral-gradient">
                   <span className="text-xl text-white">📱</span>
                 </div>
-                <h3 className="ml-4 text-lg font-semibold text-foreground">Mobile App</h3>
+                <h3 className="ml-4 text-lg font-semibold text-gray-900 dark:text-white">Mobile App</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">Download our mobile app for real-time monitoring on the go.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Download our mobile app for real-time monitoring on the go.</p>
               <Button className="w-full coral-gradient text-white hover:shadow-lg hover:shadow-coral/25 transition-all duration-300">
                 Download App
               </Button>

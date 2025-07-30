@@ -68,9 +68,9 @@ export default function AlertsPanel() {
 
   if (isLoading) {
     return (
-      <Card className="bg-surface dark:bg-card">
+      <Card className="bg-white dark:bg-gray-900">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Recent Alerts</CardTitle>
+          <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">Recent Alerts</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -86,10 +86,10 @@ export default function AlertsPanel() {
   }
 
   return (
-    <Card className="bg-surface dark:bg-card">
+    <Card className="bg-white dark:bg-gray-900">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-semibold">Recent Alerts</CardTitle>
-        <Button variant="ghost" size="sm" className="text-primary hover:text-blue-700">
+        <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">Recent Alerts</CardTitle>
+        <Button variant="ghost" size="sm" className="text-blue-600 dark:text-blue-400 hover:text-blue-700">
           View All
         </Button>
       </CardHeader>

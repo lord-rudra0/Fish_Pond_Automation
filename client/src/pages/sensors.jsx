@@ -130,7 +130,7 @@ export default function Sensors() {
             onClick={handleRefresh} 
             disabled={isRefreshing}
             variant="outline"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
           >
             <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
             Refresh
@@ -139,7 +139,7 @@ export default function Sensors() {
       </div>
 
       {!latestReading ? (
-        <Card>
+        <Card className="bg-white dark:bg-gray-900">
           <CardContent className="text-center py-12">
             <p className="text-gray-500 dark:text-gray-400">No sensor data available</p>
           </CardContent>
@@ -153,20 +153,20 @@ export default function Sensors() {
             const unit = sensorUnits[sensorType];
             
             return (
-              <Card key={sensorType} className="relative">
+              <Card key={sensorType} className="relative bg-white dark:bg-gray-900">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
+                  <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">
                     {displayName}
                   </CardTitle>
-                  <Icon className="h-4 w-4 text-muted-foreground" />
+                  <Icon className="h-4 w-4 text-gray-600 dark:text-gray-300" />
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-2xl font-bold">
+                      <div className="text-2xl font-bold text-gray-900 dark:text-white">
                         {value !== null && value !== undefined ? `${value}${unit}` : 'N/A'}
                       </div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-gray-600 dark:text-gray-300">
                         Last updated: {new Date(latestReading.timestamp).toLocaleTimeString()}
                       </p>
                     </div>
@@ -177,7 +177,7 @@ export default function Sensors() {
                   
                   {thresholds && thresholds.find(t => t.sensorType === sensorType) && (
                     <div className="mt-3 pt-3 border-t">
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-gray-600 dark:text-gray-300">
                         Safe range: {thresholds.find(t => t.sensorType === sensorType).minValue} - {thresholds.find(t => t.sensorType === sensorType).maxValue}{unit}
                       </p>
                     </div>
@@ -189,13 +189,13 @@ export default function Sensors() {
         </div>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>System Information</CardTitle>
-          <CardDescription>
-            Current status and data collection details
-          </CardDescription>
-        </CardHeader>
+              <Card className="bg-white dark:bg-gray-900">
+          <CardHeader>
+            <CardTitle className="text-gray-900 dark:text-white">System Information</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-300">
+              Current status and data collection details
+            </CardDescription>
+          </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>

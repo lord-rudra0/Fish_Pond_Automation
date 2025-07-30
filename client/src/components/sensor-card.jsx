@@ -121,20 +121,20 @@ export default function SensorCard({ type, value, thresholds, lastUpdated, color
               <span className="text-xl text-white">{icon}</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-semibold text-foreground">{label}</p>
-              <p className={`status-indicator status-${statusInfo.status} text-xs text-muted-foreground pl-4`}>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">{label}</p>
+              <p className={`status-indicator status-${statusInfo.status} text-xs text-gray-600 dark:text-gray-300 pl-4`}>
                 {statusInfo.label}
               </p>
             </div>
           </div>
         </div>
-        <div className="text-3xl font-bold text-foreground font-mono mb-2">
-          {formatValue(value)} {unit && <span className="text-sm text-muted-foreground">{unit}</span>}
+        <div className="text-3xl font-bold text-gray-900 dark:text-white font-mono mb-2">
+          {formatValue(value)} {unit && <span className="text-sm text-gray-600 dark:text-gray-300">{unit}</span>}
         </div>
-        <div className="text-xs text-muted-foreground mb-3">
+        <div className="text-xs text-gray-600 dark:text-gray-300 mb-3">
           Target: {thresholdDisplay}
         </div>
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-gray-600 dark:text-gray-300">
           Last updated: {formatLastUpdated(lastUpdated)}
         </div>
       </CardContent>

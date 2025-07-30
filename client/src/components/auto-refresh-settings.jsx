@@ -28,7 +28,7 @@ export default function AutoRefreshSettings() {
         variant="outline"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2"
+        className="flex items-center space-x-2 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
       >
         <Settings className="h-4 w-4" />
         <span>Auto Refresh</span>
@@ -43,13 +43,13 @@ export default function AutoRefreshSettings() {
       </Button>
 
       {isOpen && (
-        <Card className="absolute top-full right-0 mt-2 w-80 z-50 shadow-lg">
+        <Card className="absolute top-full right-0 mt-2 w-80 z-50 shadow-lg bg-white dark:bg-gray-900">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm flex items-center space-x-2">
+            <CardTitle className="text-sm flex items-center space-x-2 text-gray-900 dark:text-white">
               <RefreshCw className="h-4 w-4" />
               <span>Auto Refresh Settings</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-gray-600 dark:text-gray-300">
               Configure automatic data refresh intervals
             </CardDescription>
           </CardHeader>
@@ -57,8 +57,8 @@ export default function AutoRefreshSettings() {
             {/* Enable/Disable Auto Refresh */}
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <label className="text-sm font-medium">Enable Auto Refresh</label>
-                <p className="text-xs text-muted-foreground">
+                <label className="text-sm font-medium text-gray-900 dark:text-white">Enable Auto Refresh</label>
+                <p className="text-xs text-gray-600 dark:text-gray-300">
                   Automatically update data at regular intervals
                 </p>
               </div>
@@ -71,21 +71,21 @@ export default function AutoRefreshSettings() {
             {/* Refresh Interval Selection */}
             {isAutoRefreshEnabled && (
               <div className="space-y-2">
-                <label className="text-sm font-medium">Refresh Interval</label>
+                <label className="text-sm font-medium text-gray-900 dark:text-white">Refresh Interval</label>
                 <Select
                   value={(currentInterval / 1000).toString()}
                   onValueChange={(value) => updateRefreshInterval(parseInt(value) * 1000)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
                     <SelectValue placeholder="Select interval" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {refreshOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value.toString()}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+                                     <SelectContent className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+                     {refreshOptions.map((option) => (
+                       <SelectItem key={option.value} value={option.value.toString()} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">
+                         {option.label}
+                       </SelectItem>
+                     ))}
+                   </SelectContent>
                 </Select>
               </div>
             )}
@@ -93,7 +93,7 @@ export default function AutoRefreshSettings() {
             {/* Status Indicator */}
             <div className="pt-2 border-t">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">Status:</span>
+                <span className="text-gray-600 dark:text-gray-300">Status:</span>
                 <div className="flex items-center space-x-1">
                   {isAutoRefreshEnabled ? (
                     <>

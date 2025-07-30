@@ -212,30 +212,30 @@ export default function Navbar() {
                   <span className="ml-1 text-xs hidden sm:inline">Data</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 lg:w-64 mt-2">
-                <div className="p-3 border-b border-border">
-                  <p className="text-sm font-medium">Data Management</p>
-                  <p className="text-xs text-muted-foreground">Export, import & test data</p>
+              <DropdownMenuContent align="end" className="w-56 lg:w-64 mt-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 shadow-xl z-50">
+                <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">Data Management</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">Export, import & test data</p>
                 </div>
-                <DropdownMenuItem onClick={handleRefreshData} className="py-3">
+                <DropdownMenuItem onClick={handleRefreshData} className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <RefreshCw className="mr-3 h-4 w-4 text-blue-500" />
                   <div>
                     <span className="font-medium">Refresh Data</span>
-                    <p className="text-xs text-muted-foreground">Update sensor readings</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">Update sensor readings</p>
                   </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExportCSV} className="py-3">
+                <DropdownMenuItem onClick={handleExportCSV} className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Download className="mr-3 h-4 w-4 text-green-500" />
                   <div>
                     <span className="font-medium">Export CSV</span>
-                    <p className="text-xs text-muted-foreground">Download sensor data</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">Download sensor data</p>
                   </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleAddTestData} className="py-3">
+                <DropdownMenuItem onClick={handleAddTestData} className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Plus className="mr-3 h-4 w-4 text-orange-500" />
                   <div>
                     <span className="font-medium">Add Test Data</span>
-                    <p className="text-xs text-muted-foreground">Generate sample readings</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">Generate sample readings</p>
                   </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -261,72 +261,72 @@ export default function Navbar() {
                   <ChevronDown size={14} className="lg:w-4 lg:h-4 group-hover:rotate-180 transition-transform duration-300" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 lg:w-64 mt-2">
-                <div className="p-3 border-b border-border">
-                  <p className="text-sm font-medium">{user?.name || 'User'}</p>
-                  <p className="text-xs text-muted-foreground">{user?.email || 'user@example.com'}</p>
+              <DropdownMenuContent align="end" className="w-56 lg:w-64 mt-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 shadow-xl z-50">
+                <div className="p-3 border-b border-gray-200 dark:border-gray-600">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name || 'User'}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">{user?.email || 'user@example.com'}</p>
                 </div>
-                <DropdownMenuItem asChild className="py-3">
+                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Link href="/profile" className="flex items-center">
                     <User className="mr-3 h-4 w-4 text-ocean-blue" />
                     <div>
                       <span className="font-medium">Profile</span>
-                      <p className="text-xs text-muted-foreground">Manage your account</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">Manage your account</p>
                     </div>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="py-3">
+                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Link href="/thresholds" className="flex items-center">
                     <Settings className="mr-3 h-4 w-4 text-seafoam" />
                     <div>
                       <span className="font-medium">Settings</span>
-                      <p className="text-xs text-muted-foreground">Configure system</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">Configure system</p>
                     </div>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="py-3">
+                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Link href="/alerts-history" className="flex items-center">
                     <Bell className="mr-3 h-4 w-4 text-yellow-500" />
                     <div>
                       <span className="font-medium">Alerts History</span>
-                      <p className="text-xs text-muted-foreground">All notifications</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">All notifications</p>
                     </div>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="py-3">
+                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Link href="/documentation" className="flex items-center">
                     <FileText className="mr-3 h-4 w-4 text-blue-500" />
                     <div>
                       <span className="font-medium">Documentation</span>
-                      <p className="text-xs text-muted-foreground">User guides & manuals</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">User guides & manuals</p>
                     </div>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="py-3">
+                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Link href="/help" className="flex items-center">
                     <HelpCircle className="mr-3 h-4 w-4 text-green-500" />
                     <div>
                       <span className="font-medium">Help Center</span>
-                      <p className="text-xs text-muted-foreground">FAQs & support</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">FAQs & support</p>
                     </div>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild className="py-3">
+                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Link href="/contact" className="flex items-center">
                     <MessageCircle className="mr-3 h-4 w-4 text-purple-500" />
                     <div>
                       <span className="font-medium">Contact Us</span>
-                      <p className="text-xs text-muted-foreground">Get in touch</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300">Get in touch</p>
                     </div>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="py-3 text-red-600 hover:text-red-700">
+                <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-600" />
+                <DropdownMenuItem onClick={handleLogout} className="py-3 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20">
                   <LogOut className="mr-3 h-4 w-4" />
                   <div>
                     <span className="font-medium">Log out</span>
-                    <p className="text-xs text-muted-foreground">Sign out of your account</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300">Sign out of your account</p>
                   </div>
                 </DropdownMenuItem>
               </DropdownMenuContent>

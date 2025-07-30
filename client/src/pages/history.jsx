@@ -153,13 +153,13 @@ export default function History() {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full sm:w-48 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
             <Calendar className="h-4 w-4 mr-2" />
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
             {timeRanges.map(range => (
-              <SelectItem key={range.value} value={range.value}>
+              <SelectItem key={range.value} value={range.value} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">
                 {range.label}
               </SelectItem>
             ))}
@@ -167,34 +167,34 @@ export default function History() {
         </Select>
 
         <Select value={selectedSensor} onValueChange={setSelectedSensor}>
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full sm:w-48 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
             <Filter className="h-4 w-4 mr-2" />
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Sensors</SelectItem>
+          <SelectContent className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
+            <SelectItem value="all" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">All Sensors</SelectItem>
             {Object.entries(sensorNames).map(([key, name]) => (
-              <SelectItem key={key} value={key}>{name}</SelectItem>
+              <SelectItem key={key} value={key} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">{name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
       {chartData.length === 0 ? (
-        <Card>
+        <Card className="bg-white dark:bg-gray-900">
           <CardContent className="text-center py-12">
             <p className="text-gray-500 dark:text-gray-400">No data available for selected time range</p>
           </CardContent>
         </Card>
       ) : (
         <>
-          <Card>
+          <Card className="bg-white dark:bg-gray-900">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
                 <TrendingUp className="h-5 w-5" />
                 Sensor Trends
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 {selectedSensor === 'all' 
                   ? `All sensors for ${timeRanges.find(r => r.value === selectedTimeRange)?.label.toLowerCase()}` 
                   : `${sensorNames[selectedSensor]} for ${timeRanges.find(r => r.value === selectedTimeRange)?.label.toLowerCase()}`
@@ -252,15 +252,15 @@ export default function History() {
               if (!sensorStats) return null;
               
               return (
-                <Card key={sensor}>
+                <Card key={sensor} className="bg-white dark:bg-gray-900">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium">{name}</CardTitle>
+                    <CardTitle className="text-sm font-medium text-gray-900 dark:text-white">{name}</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <div className="text-2xl font-bold" style={{ color: getSensorColor(sensor) }}>
                       {sensorStats.latest}
                     </div>
-                    <div className="text-xs text-muted-foreground space-y-1">
+                    <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
                       <div>Avg: {sensorStats.avg}</div>
                       <div>Min: {sensorStats.min}</div>
                       <div>Max: {sensorStats.max}</div>

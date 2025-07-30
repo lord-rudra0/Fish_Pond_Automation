@@ -189,9 +189,9 @@ export default function Thresholds() {
       </div>
 
         {/* Create New Threshold */}
-        <Card className="mb-8 bg-surface dark:bg-card">
+        <Card className="mb-8 bg-white dark:bg-gray-900">
           <CardHeader>
-            <CardTitle className="flex items-center">
+            <CardTitle className="flex items-center text-gray-900 dark:text-white">
               <Plus className="mr-2 h-5 w-5" />
               Add New Threshold
             </CardTitle>
@@ -200,19 +200,19 @@ export default function Thresholds() {
             <form onSubmit={handleCreateThreshold} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <Label htmlFor="sensorType">Sensor Type</Label>
+                  <Label htmlFor="sensorType" className="text-gray-900 dark:text-white">Sensor Type</Label>
                   <Select 
                     value={newThreshold.sensorType} 
                     onValueChange={(value) => setNewThreshold(prev => ({ ...prev, sensorType: value }))}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
                       <SelectValue placeholder="Select sensor type" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600">
                       {sensorTypes
                         .filter(sensor => !thresholds.some(t => t.sensorType === sensor.value))
                         .map(sensor => (
-                          <SelectItem key={sensor.value} value={sensor.value}>
+                          <SelectItem key={sensor.value} value={sensor.value} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700">
                             {sensor.label}
                           </SelectItem>
                         ))}
@@ -221,7 +221,7 @@ export default function Thresholds() {
                 </div>
 
                 <div>
-                  <Label htmlFor="minValue">Minimum Value</Label>
+                  <Label htmlFor="minValue" className="text-gray-900 dark:text-white">Minimum Value</Label>
                   <Input
                     id="minValue"
                     type="number"
@@ -229,11 +229,12 @@ export default function Thresholds() {
                     placeholder="Optional"
                     value={newThreshold.minValue}
                     onChange={(e) => setNewThreshold(prev => ({ ...prev, minValue: e.target.value }))}
+                    className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="maxValue">Maximum Value</Label>
+                  <Label htmlFor="maxValue" className="text-gray-900 dark:text-white">Maximum Value</Label>
                   <Input
                     id="maxValue"
                     type="number"
@@ -241,6 +242,7 @@ export default function Thresholds() {
                     placeholder="Optional"
                     value={newThreshold.maxValue}
                     onChange={(e) => setNewThreshold(prev => ({ ...prev, maxValue: e.target.value }))}
+                    className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
                   />
                 </div>
 
@@ -248,7 +250,7 @@ export default function Thresholds() {
                   <Button 
                     type="submit" 
                     disabled={createThresholdMutation.isPending}
-                    className="w-full"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Plus className="mr-2 h-4 w-4" />
                     Add Threshold
@@ -262,7 +264,7 @@ export default function Thresholds() {
                   checked={newThreshold.alertEnabled}
                   onCheckedChange={(checked) => setNewThreshold(prev => ({ ...prev, alertEnabled: checked }))}
                 />
-                <Label htmlFor="alertEnabled">Enable alerts for this threshold</Label>
+                <Label htmlFor="alertEnabled" className="text-gray-900 dark:text-white">Enable alerts for this threshold</Label>
               </div>
             </form>
           </CardContent>
@@ -283,30 +285,30 @@ export default function Thresholds() {
               ))}
             </div>
           ) : thresholds.length === 0 ? (
-            <Card className="bg-surface dark:bg-card">
+            <Card className="bg-white dark:bg-gray-900">
               <CardContent className="p-8 text-center">
-                <AlertTriangle className="mx-auto mb-4 text-gray-400" size={48} />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No Thresholds Set</h3>
+                <AlertTriangle className="mx-auto mb-4 text-gray-400 dark:text-gray-500" size={48} />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Thresholds Set</h3>
                 <p className="text-gray-500 dark:text-gray-400">Create your first threshold to start receiving alerts when sensor values exceed safe limits.</p>
               </CardContent>
             </Card>
           ) : (
             <div className="grid gap-4">
               {thresholds.map((threshold) => (
-                <Card key={threshold.id} className="bg-surface dark:bg-card">
+                <Card key={threshold.id} className="bg-white dark:bg-gray-900">
                   <CardContent className="p-6">
                     {editingThreshold?.id === threshold.id ? (
                       <form onSubmit={handleUpdateThreshold} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           <div>
-                            <Label>Sensor Type</Label>
-                            <div className="mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded border">
+                            <Label className="text-gray-900 dark:text-white">Sensor Type</Label>
+                            <div className="mt-1 p-2 bg-gray-50 dark:bg-gray-800 rounded border text-gray-900 dark:text-white">
                               {getSensorLabel(threshold.sensorType)}
                             </div>
                           </div>
 
                           <div>
-                            <Label htmlFor="editMinValue">Minimum Value</Label>
+                            <Label htmlFor="editMinValue" className="text-gray-900 dark:text-white">Minimum Value</Label>
                             <Input
                               id="editMinValue"
                               type="number"
@@ -314,11 +316,12 @@ export default function Thresholds() {
                               placeholder="Optional"
                               value={editingThreshold.minValue}
                               onChange={(e) => setEditingThreshold(prev => ({ ...prev, minValue: e.target.value }))}
+                              className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
                             />
                           </div>
 
                           <div>
-                            <Label htmlFor="editMaxValue">Maximum Value</Label>
+                            <Label htmlFor="editMaxValue" className="text-gray-900 dark:text-white">Maximum Value</Label>
                             <Input
                               id="editMaxValue"
                               type="number"
@@ -326,6 +329,7 @@ export default function Thresholds() {
                               placeholder="Optional"
                               value={editingThreshold.maxValue}
                               onChange={(e) => setEditingThreshold(prev => ({ ...prev, maxValue: e.target.value }))}
+                              className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
                             />
                           </div>
                         </div>
@@ -337,7 +341,7 @@ export default function Thresholds() {
                               checked={editingThreshold.alertEnabled}
                               onCheckedChange={(checked) => setEditingThreshold(prev => ({ ...prev, alertEnabled: checked }))}
                             />
-                            <Label htmlFor="editAlertEnabled">Enable alerts</Label>
+                            <Label htmlFor="editAlertEnabled" className="text-gray-900 dark:text-white">Enable alerts</Label>
                           </div>
 
                           <div className="flex space-x-2">

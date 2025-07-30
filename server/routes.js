@@ -395,6 +395,46 @@ async function registerRoutes(app) {
     }
   });
 
+  // Add test data endpoint without authentication for demo purposes
+  app.post("/api/sensor-data/test", async (req, res) => {
+    try {
+      const dummyData = {
+        userId: "test-user",
+        ph: Math.random() * 2 + 6.5, // 6.5-8.5
+        waterLevel: Math.random() * 30 + 60, // 60-90 cm
+        temperature: Math.random() * 8 + 20, // 20-28°C
+        nh3: Math.random() * 3, // 0-3 ppm
+        turbidity: Math.random() * 25 + 5, // 5-30 NTU
+      };
+      
+      const reading = await storage.createSensorReading(dummyData);
+      
+      res.json(reading);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get sensor data without authentication for demo purposes
+  app.get("/api/sensor-data/demo", async (req, res) => {
+    try {
+      const { startTime, endTime } = req.query;
+      
+      if (!startTime || !endTime) {
+        return res.status(400).json({ message: "Start time and end time required" });
+      }
+      
+      const readings = await storage.getSensorReadingsByTimeRange(
+        "test-user",
+        new Date(startTime),
+        new Date(endTime)
+      );
+      res.json(readings);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   app.get('/api/weather', async (req, res) => {
     try {
       const apiKey = process.env.OPENWEATHER_API_KEY || '840ac2f9e3319a7c7b9ccac65a713a0a';

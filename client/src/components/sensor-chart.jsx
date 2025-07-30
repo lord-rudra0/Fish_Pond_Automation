@@ -31,8 +31,8 @@ export default function SensorChart() {
   const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
 
   const { data: sensorData = [], isLoading, error } = useQuery({
-    queryKey: ['/api/sensor-data/range', '24h'],
-    queryFn: () => apiRequest('GET', `/api/sensor-data/range?startTime=${startTime.toISOString()}&endTime=${endTime.toISOString()}`),
+    queryKey: ['/api/sensor-data/demo', '24h'],
+    queryFn: () => fetch(`/api/sensor-data/demo?startTime=${startTime.toISOString()}&endTime=${endTime.toISOString()}`).then(res => res.json()),
     refetchInterval: refreshInterval, // Use user-configured interval
   });
 

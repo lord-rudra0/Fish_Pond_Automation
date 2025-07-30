@@ -65,6 +65,23 @@ const checkThresholds = async (userId, sensorData) => {
 };
 
 async function registerRoutes(app) {
+  // Test database connection
+  app.get("/api/test-db", async (req, res) => {
+    try {
+      // Simple test query
+      const result = await storage.getUserByEmail("test@example.com");
+      res.json({ message: "Database connection successful", result });
+    } catch (error) {
+      console.error("Database test error:", error);
+      res.status(500).json({ 
+        message: "Database connection failed", 
+        error: error.message,
+        stack: error.stack 
+      });
+    }
+  });
+
+  // Authentication routes
   // Authentication routes
   app.post("/api/auth/register", async (req, res) => {
     try {
@@ -84,7 +101,11 @@ async function registerRoutes(app) {
         token 
       });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      console.error("Registration error:", error);
+      res.status(400).json({ 
+        message: "Error connecting to database: " + error.message,
+        details: error.stack 
+      });
     }
   });
 
@@ -186,7 +207,7 @@ async function registerRoutes(app) {
 
   app.put("/api/thresholds/:id", authenticateToken, async (req, res) => {
     try {
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const updateData = req.body;
       
       const threshold = await storage.updateThreshold(id, updateData);
@@ -202,7 +223,7 @@ async function registerRoutes(app) {
 
   app.delete("/api/thresholds/:id", authenticateToken, async (req, res) => {
     try {
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const deleted = await storage.deleteThreshold(id);
       
       if (!deleted) {
@@ -237,7 +258,7 @@ async function registerRoutes(app) {
 
   app.put("/api/alerts/:id/acknowledge", authenticateToken, async (req, res) => {
     try {
-      const id = req.params.id;
+      const id = parseInt(req.params.id);
       const acknowledged = await storage.acknowledgeAlert(id);
       
       if (!acknowledged) {

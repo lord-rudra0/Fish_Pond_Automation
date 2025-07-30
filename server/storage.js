@@ -1,32 +1,38 @@
-import mongoose from "mongoose";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { eq, desc, and, gte, lte } from "drizzle-orm";
+import { 
+  users, 
+  sensorData, 
+  thresholds, 
+  alerts
+} from "../shared/schema.js";
 import bcrypt from "bcrypt";
-import { User, SensorData, Threshold, Alert } from "../shared/schema.js";
 
-const DATABASE_URL = "mongodb+srv://rudrapratapsingh2026:tl78f8ICyVK4e5O8@cluster0.nledaqs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const DATABASE_URL = "postgresql://postgres.lluxruhejobeoydajjwg:AMANrana7392924934@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres";
 
-console.log("🔗 Connecting to MongoDB...");
-console.log("📡 Database URL:", DATABASE_URL.replace(/\/\/[^:]+:[^@]+@/, "//***:***@")); // Hide credentials
-
-// Connect to MongoDB
-mongoose.connect(DATABASE_URL);
+const sql = neon(DATABASE_URL);
+const db = drizzle(sql);
 
 class DatabaseStorage {
   // User management
   async getUser(id) {
-    return await User.findById(id);
+    const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
   }
 
   async getUserByEmail(email) {
-    return await User.findOne({ email });
+    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    return result[0];
   }
 
   async createUser(insertUser) {
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
-    const user = new User({
+    const result = await db.insert(users).values({
       ...insertUser,
       password: hashedPassword,
-    });
-    return await user.save();
+    }).returning();
+    return result[0];
   }
 
   async verifyUser(email, password) {
@@ -39,64 +45,88 @@ class DatabaseStorage {
 
   // Sensor data
   async createSensorReading(data) {
-    const reading = new SensorData(data);
-    return await reading.save();
+    const result = await db.insert(sensorData).values(data).returning();
+    return result[0];
   }
 
   async getSensorReadings(userId, limit = 50) {
-    return await SensorData.find({ userId })
-      .sort({ timestamp: -1 })
+    return await db.select()
+      .from(sensorData)
+      .where(eq(sensorData.userId, userId))
+      .orderBy(desc(sensorData.timestamp))
       .limit(limit);
   }
 
   async getSensorReadingsByTimeRange(userId, startTime, endTime) {
-    return await SensorData.find({
-      userId,
-      timestamp: { $gte: startTime, $lte: endTime }
-    }).sort({ timestamp: -1 });
+    return await db.select()
+      .from(sensorData)
+      .where(
+        and(
+          eq(sensorData.userId, userId),
+          gte(sensorData.timestamp, startTime),
+          lte(sensorData.timestamp, endTime)
+        )
+      )
+      .orderBy(desc(sensorData.timestamp));
   }
 
   // Thresholds
   async createThreshold(threshold) {
-    const newThreshold = new Threshold(threshold);
-    return await newThreshold.save();
+    const result = await db.insert(thresholds).values(threshold).returning();
+    return result[0];
   }
 
   async getThresholds(userId) {
-    return await Threshold.find({ userId });
+    return await db.select()
+      .from(thresholds)
+      .where(eq(thresholds.userId, userId));
   }
 
   async updateThreshold(id, threshold) {
-    return await Threshold.findByIdAndUpdate(id, threshold, { new: true });
+    const result = await db.update(thresholds)
+      .set(threshold)
+      .where(eq(thresholds.id, id))
+      .returning();
+    return result[0];
   }
 
   async deleteThreshold(id) {
-    const result = await Threshold.findByIdAndDelete(id);
-    return result !== null;
+    const result = await db.delete(thresholds)
+      .where(eq(thresholds.id, id));
+    return result.rowCount > 0;
   }
 
   // Alerts
   async createAlert(alert) {
-    const newAlert = new Alert(alert);
-    return await newAlert.save();
+    const result = await db.insert(alerts).values(alert).returning();
+    return result[0];
   }
 
   async getAlerts(userId, limit = 50) {
-    return await Alert.find({ userId })
-      .sort({ timestamp: -1 })
+    return await db.select()
+      .from(alerts)
+      .where(eq(alerts.userId, userId))
+      .orderBy(desc(alerts.timestamp))
       .limit(limit);
   }
 
   async acknowledgeAlert(id) {
-    const result = await Alert.findByIdAndUpdate(id, { acknowledged: true });
-    return result !== null;
+    const result = await db.update(alerts)
+      .set({ acknowledged: true })
+      .where(eq(alerts.id, id));
+    return result.rowCount > 0;
   }
 
   async getUnacknowledgedAlerts(userId) {
-    return await Alert.find({
-      userId,
-      acknowledged: false
-    }).sort({ timestamp: -1 });
+    return await db.select()
+      .from(alerts)
+      .where(
+        and(
+          eq(alerts.userId, userId),
+          eq(alerts.acknowledged, false)
+        )
+      )
+      .orderBy(desc(alerts.timestamp));
   }
 }
 

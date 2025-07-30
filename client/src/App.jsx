@@ -10,7 +10,14 @@ import Dashboard from "@/pages/dashboard";
 import Login from "@/pages/login";
 import Signup from "@/pages/signup";
 import Thresholds from "@/pages/thresholds";
+import Sensors from "@/pages/sensors";
+import History from "@/pages/history";
+import Profile from "@/pages/profile";
+import Documentation from "@/pages/documentation";
+import Help from "@/pages/help";
+import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
+import Layout from "@/components/layout";
 
 function Router() {
   const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
@@ -38,12 +45,20 @@ function Router() {
   }
 
   return (
-    <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/dashboard" component={Dashboard} />
-      <Route path="/thresholds" component={Thresholds} />
-      <Route component={NotFound} />
-    </Switch>
+            <Layout>
+          <Switch>
+            <Route path="/" component={Dashboard} />
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/sensors" component={Sensors} />
+            <Route path="/history" component={History} />
+            <Route path="/thresholds" component={Thresholds} />
+            <Route path="/profile" component={Profile} />
+            <Route path="/documentation" component={Documentation} />
+            <Route path="/help" component={Help} />
+            <Route path="/contact" component={Contact} />
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
   );
 }
 

@@ -1,6 +1,5 @@
 import { createServer } from "http";
 import { storage } from "./storage.js";
-import { insertUserSchema, insertSensorDataSchema, insertThresholdSchema } from "../shared/schema.js";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = "your-secret-key-here-change-this-in-production";
@@ -10,14 +9,19 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
+  console.log('Auth Header:', authHeader);
+  console.log('Token:', token ? 'Present' : 'Missing');
+
   if (!token) {
     return res.status(401).json({ message: 'Access token required' });
   }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
+      console.log('JWT Verification Error:', err.message);
       return res.status(403).json({ message: 'Invalid token' });
     }
+    console.log('Authenticated User:', user);
     req.user = user;
     next();
   });
@@ -81,23 +85,46 @@ async function registerRoutes(app) {
     }
   });
 
+  // Test sensor data without authentication
+  app.get("/api/test-sensor-data", async (req, res) => {
+    try {
+      const readings = await storage.getSensorReadings("test-user", 10);
+      res.json({ message: "Sensor data test successful", readings });
+    } catch (error) {
+      console.error("Sensor data test error:", error);
+      res.status(500).json({ 
+        message: "Sensor data test failed", 
+        error: error.message 
+      });
+    }
+  });
+
   // Authentication routes
   // Authentication routes
   app.post("/api/auth/register", async (req, res) => {
     try {
-      const userData = insertUserSchema.parse(req.body);
+      const { email, password, name } = req.body;
+      
+      // Basic validation
+      if (!email || !password || !name) {
+        return res.status(400).json({ message: "Email, password, and name are required" });
+      }
+      
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters" });
+      }
       
       // Check if user already exists
-      const existingUser = await storage.getUserByEmail(userData.email);
+      const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({ message: "User already exists" });
       }
       
-      const user = await storage.createUser(userData);
-      const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+      const user = await storage.createUser({ email, password, name });
+      const token = jwt.sign({ userId: user._id.toString(), email: user.email }, JWT_SECRET, { expiresIn: '7d' });
       
       res.json({ 
-        user: { id: user.id, email: user.email, name: user.name },
+        user: { id: user._id.toString(), email: user.email, name: user.name },
         token 
       });
     } catch (error) {
@@ -122,10 +149,10 @@ async function registerRoutes(app) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
-      const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ userId: user._id.toString(), email: user.email }, JWT_SECRET, { expiresIn: '7d' });
       
       res.json({ 
-        user: { id: user.id, email: user.email, name: user.name },
+        user: { id: user._id.toString(), email: user.email, name: user.name },
         token 
       });
     } catch (error) {
@@ -154,10 +181,14 @@ async function registerRoutes(app) {
 
   app.get("/api/sensor-data", authenticateToken, async (req, res) => {
     try {
+      console.log('User object:', req.user);
+      console.log('User ID:', req.user?.userId);
+      
       const limit = parseInt(req.query.limit) || 50;
       const readings = await storage.getSensorReadings(req.user.userId, limit);
       res.json(readings);
     } catch (error) {
+      console.error('Sensor data error:', error);
       res.status(500).json({ message: error.message });
     }
   });
@@ -266,6 +297,77 @@ async function registerRoutes(app) {
       }
       
       res.json({ message: "Alert acknowledged successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // User profile and password change routes
+  app.get("/api/user/profile", authenticateToken, async (req, res) => {
+    try {
+      const user = await storage.getUserById(req.user.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Don't send password in response
+      const { password, ...userProfile } = user;
+      res.json(userProfile);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put("/api/user/profile", authenticateToken, async (req, res) => {
+    try {
+      const { name, email } = req.body;
+      
+      if (!name || !email) {
+        return res.status(400).json({ message: "Name and email are required" });
+      }
+      
+      const updatedUser = await storage.updateUser(req.user.userId, { name, email });
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const { password, ...userProfile } = updatedUser;
+      res.json(userProfile);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put("/api/user/password", authenticateToken, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current password and new password are required" });
+      }
+      
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "New password must be at least 6 characters long" });
+      }
+      
+      // Verify current password
+      const user = await storage.getUserById(req.user.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const isCurrentPasswordValid = await storage.verifyPassword(currentPassword, user.password);
+      if (!isCurrentPasswordValid) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+      
+      // Update password
+      const updatedUser = await storage.updateUserPassword(req.user.userId, newPassword);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json({ message: "Password updated successfully" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

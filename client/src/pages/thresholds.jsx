@@ -12,9 +12,6 @@ import { Trash2, Plus, Save, AlertTriangle } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-
 const sensorTypes = [
   { value: 'ph', label: 'pH Level', unit: '', min: 0, max: 14 },
   { value: 'waterLevel', label: 'Water Level', unit: 'cm', min: 0, max: 200 },
@@ -185,14 +182,11 @@ export default function Thresholds() {
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background">
-      <Navbar />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Threshold Configuration</h2>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Set alert thresholds for your sensor readings</p>
-        </div>
+    <div className="space-y-8">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Threshold Configuration</h2>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Set alert thresholds for your sensor readings</p>
+      </div>
 
         {/* Create New Threshold */}
         <Card className="mb-8 bg-surface dark:bg-card">
@@ -433,9 +427,6 @@ export default function Thresholds() {
             </div>
           </CardContent>
         </Card>
-      </main>
-
-      <Footer />
-    </div>
-  );
-}
+      </div>
+    );
+  }

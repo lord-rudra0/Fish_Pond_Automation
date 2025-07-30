@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Droplets, Thermometer, Activity, FlaskConical, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAutoRefresh } from '@/hooks/use-auto-refresh';
+import AutoRefreshSettings from '@/components/auto-refresh-settings';
 
 const sensorIcons = {
   ph: FlaskConical,
@@ -33,10 +35,11 @@ const sensorNames = {
 export default function Sensors() {
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { refreshInterval } = useAutoRefresh();
 
   const { data: sensorData, isLoading, refetch } = useQuery({
     queryKey: ['/api/sensor-data'],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: refreshInterval, // Use user-configured interval
   });
 
   const { data: thresholds } = useQuery({
@@ -121,15 +124,18 @@ export default function Sensors() {
             Real-time monitoring of all pond sensors
           </p>
         </div>
-        <Button 
-          onClick={handleRefresh} 
-          disabled={isRefreshing}
-          variant="outline"
-          className="flex items-center gap-2"
-        >
-          <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex items-center space-x-3">
+          <AutoRefreshSettings />
+          <Button 
+            onClick={handleRefresh} 
+            disabled={isRefreshing}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {!latestReading ? (

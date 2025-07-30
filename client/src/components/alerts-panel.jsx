@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertCircle, AlertTriangle, CheckCircle, X } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useAutoRefresh } from "@/hooks/use-auto-refresh";
 
 const getAlertIcon = (severity) => {
   switch (severity) {
@@ -45,11 +46,12 @@ const formatTimeAgo = (timestamp) => {
 
 export default function AlertsPanel() {
   const queryClient = useQueryClient();
+  const { refreshInterval } = useAutoRefresh();
 
   const { data: alerts = [], isLoading } = useQuery({
     queryKey: ['/api/alerts'],
     queryParams: { limit: 10 },
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: refreshInterval, // Use user-configured interval
   });
 
   const acknowledgeMutation = useMutation({

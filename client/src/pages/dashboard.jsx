@@ -2,25 +2,27 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Download, Plus } from "lucide-react";
+import { RefreshCw, Download, Plus, Fish } from "lucide-react";
 import { useState } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-
+import { useAutoRefresh } from "@/hooks/use-auto-refresh";
 
 import SensorCard from "@/components/sensor-card";
 import AlertsPanel from "@/components/alerts-panel";
 import SensorChart from "@/components/sensor-chart";
+import AutoRefreshSettings from "@/components/auto-refresh-settings";
 
 export default function Dashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { refreshInterval } = useAutoRefresh();
 
   // Fetch sensor data
   const { data: sensorReadings = [], isLoading: isLoadingSensors, refetch: refetchSensors } = useQuery({
     queryKey: ['/api/sensor-data'],
     queryParams: { limit: 50 },
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: refreshInterval, // Use user-configured interval
   });
 
   // Fetch thresholds
@@ -66,26 +68,38 @@ export default function Dashboard() {
   
   // Get alerts for display
   const { data: unacknowledgedAlerts = [] } = useQuery({
-    queryKey: ['/api/alerts/unacknowledged']
+    queryKey: ['/api/alerts/unacknowledged'],
+    refetchInterval: refreshInterval, // Use user-configured interval
   });
 
   const hasActiveAlerts = unacknowledgedAlerts.length > 0;
   const criticalAlerts = unacknowledgedAlerts.filter(alert => alert.severity === 'critical');
 
   return (
-    <div className="space-y-8">
+    <div className="min-h-screen gradient-bg">
+      <div className="space-y-8 p-6">
         {/* Dashboard Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Pond Monitoring Dashboard</h2>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Real-time sensor data and system status</p>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg">
+                  <Fish className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                    AquaWatch Dashboard
+                  </h2>
+                  <p className="mt-1 text-lg text-gray-600 dark:text-gray-300">Real-time pond monitoring & analytics</p>
+                </div>
+              </div>
             </div>
             <div className="mt-4 sm:mt-0 flex space-x-3">
+              <AutoRefreshSettings />
               <Button
                 onClick={handleRefresh}
                 disabled={isLoadingSensors}
-                className="bg-primary text-white hover:bg-blue-700"
+                className="ocean-gradient text-white hover:shadow-lg hover:shadow-ocean-blue/25 transition-all duration-300"
               >
                 <RefreshCw className={`mr-2 h-4 w-4 ${isLoadingSensors ? 'animate-spin' : ''}`} />
                 Refresh Data
@@ -94,11 +108,15 @@ export default function Dashboard() {
                 onClick={handleAddDummyData}
                 disabled={addDummyDataMutation.isPending}
                 variant="outline"
+                className="hover:bg-seafoam hover:text-white transition-all duration-300"
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Add Test Data
               </Button>
-              <Button variant="outline" className="text-gray-700 dark:text-gray-300">
+              <Button 
+                variant="outline" 
+                className="hover:bg-coral hover:text-white transition-all duration-300"
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
@@ -109,23 +127,26 @@ export default function Dashboard() {
         {/* Alert Banner */}
         {hasActiveAlerts && (
           <div className="mb-6">
-            <Card className={`border ${criticalAlerts.length > 0 ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : 'border-orange-200 bg-orange-50 dark:bg-orange-900/20'}`}>
-              <CardContent className="p-4">
+            <Card className={`glass-card border-2 ${criticalAlerts.length > 0 ? 'border-red-300 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20' : 'border-orange-300 bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-900/20 dark:to-yellow-900/20'}`}>
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className={`p-2 rounded-full mr-3 ${criticalAlerts.length > 0 ? 'bg-red-100 dark:bg-red-800' : 'bg-orange-100 dark:bg-orange-800'}`}>
-                      <span className="text-lg">{criticalAlerts.length > 0 ? '🚨' : '⚠️'}</span>
+                    <div className={`p-3 rounded-full mr-4 ${criticalAlerts.length > 0 ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-orange-400 to-yellow-500'}`}>
+                      <span className="text-2xl">{criticalAlerts.length > 0 ? '🚨' : '⚠️'}</span>
                     </div>
                     <div>
-                      <h3 className={`text-sm font-medium ${criticalAlerts.length > 0 ? 'text-red-800 dark:text-red-200' : 'text-orange-800 dark:text-orange-200'}`}>
+                      <h3 className={`text-lg font-bold ${criticalAlerts.length > 0 ? 'text-red-800 dark:text-red-200' : 'text-orange-800 dark:text-orange-200'}`}>
                         {criticalAlerts.length > 0 ? 'Critical Alert' : 'System Alert'}
                       </h3>
-                      <p className={`text-sm ${criticalAlerts.length > 0 ? 'text-red-700 dark:text-red-300' : 'text-orange-700 dark:text-orange-300'}`}>
-                        {unacknowledgedAlerts.length} unacknowledged alert{unacknowledgedAlerts.length > 1 ? 's' : ''} require attention.
+                      <p className={`text-base ${criticalAlerts.length > 0 ? 'text-red-700 dark:text-red-300' : 'text-orange-700 dark:text-orange-300'}`}>
+                        {unacknowledgedAlerts.length} unacknowledged alert{unacknowledgedAlerts.length > 1 ? 's' : ''} require immediate attention.
                       </p>
                     </div>
                   </div>
-                  <Badge variant={criticalAlerts.length > 0 ? "destructive" : "secondary"}>
+                  <Badge 
+                    variant={criticalAlerts.length > 0 ? "destructive" : "secondary"}
+                    className="text-lg px-4 py-2"
+                  >
                     {unacknowledgedAlerts.length} Alert{unacknowledgedAlerts.length > 1 ? 's' : ''}
                   </Badge>
                 </div>
@@ -136,6 +157,10 @@ export default function Dashboard() {
 
         {/* Sensor Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
+          <div className="col-span-full mb-4">
+            <h3 className="text-2xl font-bold text-foreground mb-2">Sensor Status</h3>
+            <p className="text-muted-foreground">Real-time monitoring of all pond parameters</p>
+          </div>
           <SensorCard
             type="ph"
             value={latestReading.ph}
@@ -278,51 +303,52 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-surface dark:bg-card">
+          <Card className="cool-card glow-effect">
             <CardContent className="p-6">
               <div className="flex items-center mb-4">
-                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <span className="text-lg">⚙️</span>
+                <div className="p-3 rounded-xl ocean-gradient">
+                  <span className="text-xl text-white">⚙️</span>
                 </div>
-                <h3 className="ml-3 text-lg font-semibold text-gray-900 dark:text-gray-100">Configure Thresholds</h3>
+                <h3 className="ml-4 text-lg font-semibold text-foreground">Configure Thresholds</h3>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Set custom threshold values for each sensor type to receive timely alerts.</p>
-              <Button className="w-full bg-primary text-white hover:bg-blue-700">
+              <p className="text-sm text-muted-foreground mb-4">Set custom threshold values for each sensor type to receive timely alerts.</p>
+              <Button className="w-full ocean-gradient text-white hover:shadow-lg hover:shadow-ocean-blue/25 transition-all duration-300">
                 Open Settings
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-surface dark:bg-card">
+          <Card className="cool-card glow-effect">
             <CardContent className="p-6">
               <div className="flex items-center mb-4">
-                <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <span className="text-lg">📊</span>
+                <div className="p-3 rounded-xl seafoam-gradient">
+                  <span className="text-xl text-white">📊</span>
                 </div>
-                <h3 className="ml-3 text-lg font-semibold text-gray-900 dark:text-gray-100">Historical Reports</h3>
+                <h3 className="ml-4 text-lg font-semibold text-foreground">Historical Reports</h3>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">View detailed historical data and generate reports for pond management.</p>
-              <Button className="w-full bg-secondary text-white hover:bg-green-700">
+              <p className="text-sm text-muted-foreground mb-4">View detailed historical data and generate reports for pond management.</p>
+              <Button className="w-full seafoam-gradient text-white hover:shadow-lg hover:shadow-seafoam/25 transition-all duration-300">
                 View Reports
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-surface dark:bg-card">
+          <Card className="cool-card glow-effect">
             <CardContent className="p-6">
               <div className="flex items-center mb-4">
-                <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <span className="text-lg">📱</span>
+                <div className="p-3 rounded-xl coral-gradient">
+                  <span className="text-xl text-white">📱</span>
                 </div>
-                <h3 className="ml-3 text-lg font-semibold text-gray-900 dark:text-gray-100">Mobile App</h3>
+                <h3 className="ml-4 text-lg font-semibold text-foreground">Mobile App</h3>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Download our mobile app for real-time monitoring on the go.</p>
-              <Button className="w-full bg-purple-600 text-white hover:bg-purple-700">
+              <p className="text-sm text-muted-foreground mb-4">Download our mobile app for real-time monitoring on the go.</p>
+              <Button className="w-full coral-gradient text-white hover:shadow-lg hover:shadow-coral/25 transition-all duration-300">
                 Download App
               </Button>
             </CardContent>
           </Card>
         </div>
+      </div>
     </div>
   );
 }

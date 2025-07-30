@@ -106,34 +106,35 @@ export default function SensorCard({ type, value, thresholds, lastUpdated, color
   };
 
   return (
-    <Card className={`sensor-card bg-surface dark:bg-card border border-gray-100 dark:border-gray-800 ${colorClass}`}>
-      <CardContent className="p-6">
+    <Card className={`sensor-card cool-card glow-effect ${colorClass} relative overflow-hidden`}>
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
+      <CardContent className="p-6 relative z-10">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
-            <div className={`p-2 rounded-lg ${
-              type === 'ph' ? 'bg-blue-50 dark:bg-blue-900/20' :
-              type === 'waterLevel' ? 'bg-orange-50 dark:bg-orange-900/20' :
-              type === 'temperature' ? 'bg-green-50 dark:bg-green-900/20' :
-              type === 'nh3' ? 'bg-red-50 dark:bg-red-900/20' :
-              'bg-purple-50 dark:bg-purple-900/20'
+            <div className={`p-3 rounded-xl ${
+              type === 'ph' ? 'ocean-gradient' :
+              type === 'waterLevel' ? 'coral-gradient' :
+              type === 'temperature' ? 'seafoam-gradient' :
+              type === 'nh3' ? 'bg-gradient-to-r from-red-400 to-red-600' :
+              'bg-gradient-to-r from-purple-400 to-purple-600'
             }`}>
-              <span className="text-lg">{icon}</span>
+              <span className="text-xl text-white">{icon}</span>
             </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{label}</p>
-              <p className={`status-indicator status-${statusInfo.status} text-xs text-gray-500 dark:text-gray-400 pl-4`}>
+            <div className="ml-4">
+              <p className="text-sm font-semibold text-foreground">{label}</p>
+              <p className={`status-indicator status-${statusInfo.status} text-xs text-muted-foreground pl-4`}>
                 {statusInfo.label}
               </p>
             </div>
           </div>
         </div>
-        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 font-mono">
-          {formatValue(value)} {unit && <span className="text-sm text-gray-500 dark:text-gray-400">{unit}</span>}
+        <div className="text-3xl font-bold text-foreground font-mono mb-2">
+          {formatValue(value)} {unit && <span className="text-sm text-muted-foreground">{unit}</span>}
         </div>
-        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <div className="text-xs text-muted-foreground mb-3">
           Target: {thresholdDisplay}
         </div>
-        <div className="mt-3 text-xs text-gray-400 dark:text-gray-500">
+        <div className="text-xs text-muted-foreground">
           Last updated: {formatLastUpdated(lastUpdated)}
         </div>
       </CardContent>

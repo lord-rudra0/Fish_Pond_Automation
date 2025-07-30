@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar, Download, Filter, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format, subDays, subHours, subWeeks } from 'date-fns';
+import { useAutoRefresh } from '@/hooks/use-auto-refresh';
+import AutoRefreshSettings from '@/components/auto-refresh-settings';
 
 const sensorNames = {
   ph: 'pH Level',
@@ -25,6 +27,7 @@ const timeRanges = [
 export default function History() {
   const [selectedTimeRange, setSelectedTimeRange] = useState('24h');
   const [selectedSensor, setSelectedSensor] = useState('all');
+  const { refreshInterval } = useAutoRefresh();
 
   // Get the date range for API query
   const getDateRange = () => {
@@ -151,6 +154,7 @@ export default function History() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <AutoRefreshSettings />
           <Button onClick={exportData} variant="outline" size="sm" className="flex items-center gap-2">
             <Download className="h-4 w-4" />
             Export CSV

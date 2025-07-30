@@ -108,9 +108,16 @@ Built with:
 
 ## 🔗 Related Repositories
 
-- **Server**: [aquawatch-server](https://github.com/your-username/aquawatch-server)
-- **Database**: Supabase PostgreSQL
+- **Server**: [aquawatch-server](https://github.com/your-username/aqunot showing properly in dark theme 
+⚠️
+Error Loading Data
 
-## 📄 License
+Unexpected token 'A', "API Server Running" is not valid JSON
 
-MIT License - see LICENSE file for details 
+
+
+filter button and previous 1 2 3 and next button is not showing properly in dark theme 
+⚠️
+Error Loading Data
+
+Unexpected token 'A', "API Server Running" is not valid JSON

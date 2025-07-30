@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { authService } from "../lib/auth";
-import { Bell, Fish, ChevronDown, User, Settings, LogOut, Menu, X, Sun, Moon, FileText, HelpCircle, MessageCircle } from "lucide-react";
+import { Bell, Fish, ChevronDown, User, Settings, LogOut, Menu, X, Sun, Moon, FileText, HelpCircle, MessageCircle, Download, Plus, Database, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAutoRefresh } from "@/hooks/use-auto-refresh";
 import { useTheme } from "@/hooks/use-theme";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/utils";
+import { saveAs } from "file-saver";
 
 export default function Navbar() {
   const [location] = useLocation();
@@ -21,15 +24,95 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { refreshInterval } = useAutoRefresh();
   const { theme, toggleTheme } = useTheme();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: unacknowledgedAlerts = [] } = useQuery({
     queryKey: ['/api/alerts/unacknowledged'],
     refetchInterval: refreshInterval, // Use user-configured interval
   });
 
+  // Fetch sensor data for export
+  const { data: sensorReadings = [] } = useQuery({
+    queryKey: ['/api/sensor-data'],
+    queryParams: { limit: 1000 }, // Get more data for export
+  });
+
   const handleLogout = () => {
     authService.logout();
     window.location.reload();
+  };
+
+  // Convert data to CSV
+  const convertToCSV = (data) => {
+    if (!data || data.length === 0) return '';
+    
+    const headers = ['Timestamp', 'pH', 'Water Level (cm)', 'Temperature (°C)', 'NH3 (ppm)', 'Turbidity (NTU)'];
+    const csvContent = [
+      headers.join(','),
+      ...data.map(reading => [
+        new Date(reading.timestamp).toLocaleString(),
+        reading.ph?.toFixed(2) || '',
+        reading.waterLevel?.toFixed(2) || '',
+        reading.temperature?.toFixed(2) || '',
+        reading.nh3?.toFixed(2) || '',
+        reading.turbidity?.toFixed(2) || ''
+      ].join(','))
+    ].join('\n');
+    
+    return csvContent;
+  };
+
+  // Handle export CSV
+  const handleExportCSV = () => {
+    const csv = convertToCSV(sensorReadings);
+    if (!csv) {
+      toast({
+        title: "No data to export",
+        description: "There are no sensor readings available for export.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, `sensor_readings_${Date.now()}.csv`);
+    
+    toast({
+      title: "Export successful",
+      description: `Exported ${sensorReadings.length} sensor readings to CSV.`,
+    });
+  };
+
+  // Handle add test data
+  const handleAddTestData = async () => {
+    try {
+      await apiRequest('POST', '/api/sensor-data/dummy');
+      queryClient.invalidateQueries({ queryKey: ['/api/sensor-data'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/alerts'] });
+      
+      toast({
+        title: "Test data added",
+        description: "New sensor reading has been generated successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to add test data",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Handle refresh data
+  const handleRefreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ['/api/sensor-data'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/alerts'] });
+    
+    toast({
+      title: "Data refreshed",
+      description: "Sensor readings have been updated.",
+    });
   };
 
   const navItems = [
@@ -113,6 +196,46 @@ export default function Navbar() {
               )}
             </Button>
 
+            {/* Data Management Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="p-2 lg:p-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 rounded-lg lg:rounded-xl group"
+                >
+                  <Database size={18} className="lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-300" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 lg:w-64 mt-2">
+                <div className="p-3 border-b border-border">
+                  <p className="text-sm font-medium">Data Management</p>
+                  <p className="text-xs text-muted-foreground">Export, import & test data</p>
+                </div>
+                <DropdownMenuItem onClick={handleRefreshData} className="py-3">
+                  <RefreshCw className="mr-3 h-4 w-4 text-blue-500" />
+                  <div>
+                    <span className="font-medium">Refresh Data</span>
+                    <p className="text-xs text-muted-foreground">Update sensor readings</p>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportCSV} className="py-3">
+                  <Download className="mr-3 h-4 w-4 text-green-500" />
+                  <div>
+                    <span className="font-medium">Export CSV</span>
+                    <p className="text-xs text-muted-foreground">Download sensor data</p>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleAddTestData} className="py-3">
+                  <Plus className="mr-3 h-4 w-4 text-orange-500" />
+                  <div>
+                    <span className="font-medium">Add Test Data</span>
+                    <p className="text-xs text-muted-foreground">Generate sample readings</p>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {/* Divider */}
             <div className="h-6 lg:h-8 w-px bg-gray-300 dark:bg-gray-600 mx-1 lg:mx-2 hidden sm:block"></div>
             
@@ -153,6 +276,15 @@ export default function Navbar() {
                     <div>
                       <span className="font-medium">Settings</span>
                       <p className="text-xs text-muted-foreground">Configure system</p>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="py-3">
+                  <Link href="/alerts-history" className="flex items-center">
+                    <Bell className="mr-3 h-4 w-4 text-yellow-500" />
+                    <div>
+                      <span className="font-medium">Alerts History</span>
+                      <p className="text-xs text-muted-foreground">All notifications</p>
                     </div>
                   </Link>
                 </DropdownMenuItem>
@@ -248,6 +380,12 @@ export default function Navbar() {
                       <span>Settings</span>
                     </div>
                   </Link>
+                  <Link href="/alerts-history">
+                    <div className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300">
+                      <Bell className="mr-3 h-4 w-4 text-yellow-500" />
+                      <span>Alerts History</span>
+                    </div>
+                  </Link>
                   <Link href="/documentation">
                     <div className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300">
                       <FileText className="mr-3 h-4 w-4" />
@@ -266,6 +404,44 @@ export default function Navbar() {
                       <span>Contact Us</span>
                     </div>
                   </Link>
+                  
+                  {/* Data Management Section */}
+                  <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
+                    <div className="px-3 py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Data Management
+                    </div>
+                    <div 
+                      className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300 cursor-pointer"
+                      onClick={() => {
+                        handleRefreshData();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <RefreshCw className="mr-3 h-4 w-4 text-blue-500" />
+                      <span>Refresh Data</span>
+                    </div>
+                    <div 
+                      className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-all duration-300 cursor-pointer"
+                      onClick={() => {
+                        handleExportCSV();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <Download className="mr-3 h-4 w-4 text-green-500" />
+                      <span>Export CSV</span>
+                    </div>
+                    <div 
+                      className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-all duration-300 cursor-pointer"
+                      onClick={() => {
+                        handleAddTestData();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <Plus className="mr-3 h-4 w-4 text-orange-500" />
+                      <span>Add Test Data</span>
+                    </div>
+                  </div>
+                  
                   <div 
                     className="flex items-center px-3 py-2 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-300 cursor-pointer"
                     onClick={() => {

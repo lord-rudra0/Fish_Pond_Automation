@@ -18,6 +18,7 @@ import Help from "@/pages/help";
 import Contact from "@/pages/contact";
 import NotFound from "@/pages/not-found";
 import Layout from "@/components/layout";
+import AlertsHistory from "@/pages/alerts-history";
 
 function Router() {
   const [isAuthenticated, setIsAuthenticated] = useState(authService.isAuthenticated());
@@ -56,6 +57,7 @@ function Router() {
             <Route path="/documentation" component={Documentation} />
             <Route path="/help" component={Help} />
             <Route path="/contact" component={Contact} />
+            <Route path="/alerts-history" component={AlertsHistory} />
             <Route component={NotFound} />
           </Switch>
         </Layout>

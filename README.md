@@ -17,10 +17,16 @@ A full-stack web application for monitoring fish pond water quality parameters. 
 2. Set up environment variables:
    Create a `.env` file in the root directory with:
    ```
+   # OpenWeather API Configuration
+   OPENWEATHER_API_KEY=your-openweather-api-key-here
+   
+   # Database Configuration
    DATABASE_URL=postgresql://username:password@host:port/database
    JWT_SECRET=your-secret-key-here
    PORT=5000
    ```
+   
+   **Note**: Get your OpenWeather API key from [OpenWeather API](https://openweathermap.org/api)
 
 3. Set up the database:
    ```bash

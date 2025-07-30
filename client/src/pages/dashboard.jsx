@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Download, Plus, Fish } from "lucide-react";
-import { useState } from "react";
+import { Fish } from "lucide-react";
+import { useState, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAutoRefresh } from "@/hooks/use-auto-refresh";
@@ -12,6 +12,174 @@ import SensorCard from "@/components/sensor-card";
 import AlertsPanel from "@/components/alerts-panel";
 import SensorChart from "@/components/sensor-chart";
 import AutoRefreshSettings from "@/components/auto-refresh-settings";
+
+
+
+function WeatherWidget() {
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [customCity, setCustomCity] = useState('');
+  const [showLocationInput, setShowLocationInput] = useState(false);
+  
+  // Get user's location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.log('Geolocation error:', error);
+          // Fallback to default location
+          setLocation({ lat: null, lon: null });
+        }
+      );
+    } else {
+      console.log('Geolocation not supported');
+      setLocation({ lat: null, lon: null });
+    }
+  }, []);
+  
+  // Fetch weather data when location is available
+  useEffect(() => {
+    if (location === null) return; // Still getting location
+    
+    setLoading(true);
+    setError(null);
+    
+    let url = '/api/weather';
+    if (customCity) {
+      url += `?city=${encodeURIComponent(customCity)}`;
+    } else if (location.lat && location.lon) {
+      url += `?lat=${location.lat}&lon=${location.lon}`;
+    }
+    
+    fetch(url)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log('Weather data received:', data);
+        if (data.error) {
+          throw new Error(data.error.message || 'Weather API error');
+        }
+        setWeather(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Weather fetch error:', err);
+        setError(err.message || 'Failed to load weather');
+        setLoading(false);
+      });
+  }, [location, customCity]);
+  
+  const handleCustomCitySubmit = (e) => {
+    e.preventDefault();
+    if (customCity.trim()) {
+      setShowLocationInput(false);
+    }
+  };
+  
+  const resetToCurrentLocation = () => {
+    setCustomCity('');
+    setShowLocationInput(false);
+  };
+  
+  if (loading) return <div className="text-sm text-gray-400">Loading weather...</div>;
+  if (error) return <div className="text-sm text-red-400">Weather: {error}</div>;
+  if (!weather || !weather.current) return <div className="text-sm text-red-400">Weather data unavailable</div>;
+  
+  return (
+    <div className="relative flex items-center space-x-4 bg-white/80 dark:bg-gray-800/80 rounded-lg px-4 py-2 shadow">
+      {/* Weather Icon & Temperature */}
+      <div className="flex items-center space-x-2">
+        <img src={weather.current.condition.icon} alt={weather.current.condition.text} className="h-8 w-8" />
+        <span className="text-xl font-semibold text-gray-800 dark:text-gray-100">{weather.current.temp_c}°C</span>
+      </div>
+      
+      {/* Weather Condition */}
+      <div className="flex items-center space-x-2">
+        <span className="text-sm text-gray-600 dark:text-gray-300 capitalize">{weather.current.condition.text}</span>
+      </div>
+      
+      {/* Location Info */}
+      <div className="flex items-center space-x-2">
+        <span className="text-sm text-gray-500 dark:text-gray-400">{weather.location.name}</span>
+        {customCity ? (
+          <span className="text-xs text-blue-500">📍 Custom</span>
+        ) : location && location.lat && location.lon ? (
+          <span className="text-xs text-green-500">📍 Your location</span>
+        ) : (
+          <span className="text-xs text-orange-500">📍 Default</span>
+        )}
+      </div>
+      
+      {/* Additional Weather Data */}
+      <div className="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400">
+        <span>💧 {weather.current.humidity}%</span>
+        <span>💨 {weather.current.wind_speed} m/s</span>
+        <span>📊 {weather.current.pressure} hPa</span>
+      </div>
+      
+      {/* Location Controls */}
+      <div className="flex items-center space-x-1">
+        <button
+          onClick={() => setShowLocationInput(!showLocationInput)}
+          className="text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          title="Change location"
+        >
+          📍
+        </button>
+        {customCity && (
+          <button
+            onClick={resetToCurrentLocation}
+            className="text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+            title="Reset to current location"
+          >
+            🔄
+          </button>
+        )}
+      </div>
+      
+      {/* Location Input (appears below when active) */}
+      {showLocationInput && (
+        <div className="absolute top-full left-0 right-0 mt-2 p-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-600">
+          <form onSubmit={handleCustomCitySubmit} className="flex space-x-2">
+            <input
+              type="text"
+              value={customCity}
+              onChange={(e) => setCustomCity(e.target.value)}
+              placeholder="Enter city name..."
+              className="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              autoFocus
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowLocationInput(false)}
+              className="px-4 py-2 bg-gray-500 text-white text-sm rounded hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { toast } = useToast();
@@ -30,38 +198,7 @@ export default function Dashboard() {
     queryKey: ['/api/thresholds']
   });
 
-  // Add dummy data mutation
-  const addDummyDataMutation = useMutation({
-    mutationFn: () => apiRequest('POST', '/api/sensor-data/dummy'),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/sensor-data'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/alerts'] });
-      toast({
-        title: "Dummy data added",
-        description: "New sensor reading has been generated successfully.",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to add dummy data",
-        variant: "destructive",
-      });
-    },
-  });
 
-  const handleRefresh = () => {
-    refetchSensors();
-    queryClient.invalidateQueries({ queryKey: ['/api/alerts'] });
-    toast({
-      title: "Data refreshed",
-      description: "Sensor readings have been updated.",
-    });
-  };
-
-  const handleAddDummyData = () => {
-    addDummyDataMutation.mutate();
-  };
 
   // Get latest sensor reading
   const latestReading = sensorReadings[0] || {};
@@ -87,39 +224,16 @@ export default function Dashboard() {
                   <Fish className="h-8 w-8 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                  {/* <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                     AquaWatch Dashboard
-                  </h2>
-                  <p className="mt-1 text-lg text-gray-600 dark:text-gray-300">Real-time pond monitoring & analytics</p>
+                  </h2> */}
+                  <WeatherWidget />
+                  {/* <p className="mt-1 text-lg text-gray-600 dark:text-gray-300">Real-time pond monitoring & analytics</p> */}
                 </div>
               </div>
             </div>
             <div className="mt-4 sm:mt-0 flex space-x-3">
               <AutoRefreshSettings />
-              <Button
-                onClick={handleRefresh}
-                disabled={isLoadingSensors}
-                className="ocean-gradient text-white hover:shadow-lg hover:shadow-ocean-blue/25 transition-all duration-300"
-              >
-                <RefreshCw className={`mr-2 h-4 w-4 ${isLoadingSensors ? 'animate-spin' : ''}`} />
-                Refresh Data
-              </Button>
-              <Button
-                onClick={handleAddDummyData}
-                disabled={addDummyDataMutation.isPending}
-                variant="outline"
-                className="hover:bg-seafoam hover:text-white transition-all duration-300"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Test Data
-              </Button>
-              <Button 
-                variant="outline" 
-                className="hover:bg-coral hover:text-white transition-all duration-300"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Export
-              </Button>
             </div>
           </div>
         </div>

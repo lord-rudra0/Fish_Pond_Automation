@@ -1,5 +1,11 @@
 import "dotenv/config";
 import express from "express";
+
+// Debug environment variables
+console.log('Environment check:');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('OPENWEATHER_API_KEY:', process.env.OPENWEATHER_API_KEY ? 'Present' : 'Missing');
+console.log('All env vars:', Object.keys(process.env).filter(key => key.includes('WEATHER') || key.includes('OPENWEATHER')));
 import { registerRoutes } from "./routes.js";
 import { setupVite, serveStatic, log } from "./vite.js";
 

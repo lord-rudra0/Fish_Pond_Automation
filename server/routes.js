@@ -1,6 +1,7 @@
 import { createServer } from "http";
 import { storage } from "./storage.js";
 import jwt from "jsonwebtoken";
+import fetch from 'node-fetch';
 
 const JWT_SECRET = "your-secret-key-here-change-this-in-production";
 
@@ -391,6 +392,67 @@ async function registerRoutes(app) {
       res.json(reading);
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/weather', async (req, res) => {
+    try {
+      const apiKey = process.env.OPENWEATHER_API_KEY || '840ac2f9e3319a7c7b9ccac65a713a0a';
+      console.log('OpenWeather API Key:', apiKey ? 'Present' : 'Missing');
+      
+      if (!apiKey) {
+        return res.status(500).json({ message: 'OpenWeather API key not configured' });
+      }
+      
+      let url = '';
+      if (req.query.city) {
+        url = `https://pro.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(req.query.city)}&APPID=${apiKey}&units=metric`;
+      } else if (req.query.lat && req.query.lon) {
+        url = `https://pro.openweathermap.org/data/2.5/weather?lat=${req.query.lat}&lon=${req.query.lon}&APPID=${apiKey}&units=metric`;
+      } else {
+        // Default: Delhi, India
+        url = `https://pro.openweathermap.org/data/2.5/weather?q=Delhi&APPID=${apiKey}&units=metric`;
+      }
+      
+      console.log('OpenWeather API URL:', url);
+      const response = await fetch(url);
+      console.log('OpenWeather API Response Status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('OpenWeather API Error Response:', errorText);
+        throw new Error(`OpenWeather API error: ${response.status} ${errorText}`);
+      }
+      
+      const data = await response.json();
+      console.log('OpenWeather API Success:', data.name, data.main?.temp);
+      
+      // Transform OpenWeather data to match the expected format
+      const transformedData = {
+        location: {
+          name: data.name,
+          country: data.sys?.country,
+          lat: data.coord?.lat,
+          lon: data.coord?.lon
+        },
+        current: {
+          temp_c: data.main?.temp,
+          temp_f: (data.main?.temp * 9/5) + 32,
+          condition: {
+            text: data.weather?.[0]?.description || 'Unknown',
+            icon: `https://openweathermap.org/img/wn/${data.weather?.[0]?.icon}@2x.png`
+          },
+          humidity: data.main?.humidity,
+          pressure: data.main?.pressure,
+          wind_speed: data.wind?.speed,
+          wind_deg: data.wind?.deg
+        }
+      };
+      
+      res.json(transformedData);
+    } catch (error) {
+      console.error('OpenWeather API Error:', error.message);
+      res.status(500).json({ message: 'Failed to fetch weather', error: error.message });
     }
   });
 

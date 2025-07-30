@@ -8,6 +8,17 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { format, subDays, subHours, subWeeks } from 'date-fns';
 import { useAutoRefresh } from '@/hooks/use-auto-refresh';
 import AutoRefreshSettings from '@/components/auto-refresh-settings';
+import { saveAs } from "file-saver";
+
+function convertToCSV(data) {
+  if (!Array.isArray(data) || data.length === 0) return '';
+  const keys = Object.keys(data[0]);
+  const csvRows = [keys.join(",")];
+  for (const row of data) {
+    csvRows.push(keys.map(k => JSON.stringify(row[k] ?? "")).join(","));
+  }
+  return csvRows.join("\n");
+}
 
 const sensorNames = {
   ph: 'pH Level',
@@ -63,32 +74,10 @@ export default function History() {
 
   const chartData = processChartData();
 
-  const exportData = () => {
-    if (!historicalData || historicalData.length === 0) return;
-    
-    const csv = [
-      'Timestamp,pH,Water Level (cm),Temperature (°C),NH3 (mg/L),Turbidity (NTU)',
-      ...historicalData.map(reading => 
-        [
-          new Date(reading.timestamp).toISOString(),
-          reading.ph || '',
-          reading.waterLevel || '',
-          reading.temperature || '',
-          reading.nh3 || '',
-          reading.turbidity || ''
-        ].join(',')
-      )
-    ].join('\n');
-    
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pond-data-${selectedTimeRange}-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  const handleExportCSV = () => {
+    const csv = convertToCSV(historicalData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, `pond-data-${selectedTimeRange}-${format(new Date(), 'yyyy-MM-dd')}.csv`);
   };
 
   const getSensorColor = (sensor) => {
@@ -155,8 +144,8 @@ export default function History() {
         </div>
         <div className="flex items-center gap-3">
           <AutoRefreshSettings />
-          <Button onClick={exportData} variant="outline" size="sm" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
+          <Button onClick={handleExportCSV} variant="outline" className="flex items-center mb-4">
+            <Download className="h-4 w-4 mr-2" />
             Export CSV
           </Button>
         </div>

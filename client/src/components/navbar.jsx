@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { authService } from "../lib/auth";
-import { Bell, Fish, ChevronDown, User, Settings, LogOut, Menu, X, Sun, Moon, FileText, HelpCircle, MessageCircle, Download, Plus, Database, RefreshCw } from "lucide-react";
+import { Bell, Fish, ChevronDown, User, Settings, LogOut, Menu, X, Sun, Moon, FileText, HelpCircle, MessageCircle, Download, Plus, Database, RefreshCw, HardDrive } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +15,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAutoRefresh } from "@/hooks/use-auto-refresh";
 import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/utils";
+import { apiRequest } from "@/lib/queryClient";
 import { saveAs } from "file-saver";
 
 export default function Navbar() {
@@ -65,6 +65,7 @@ export default function Navbar() {
 
   // Handle export CSV
   const handleExportCSV = () => {
+    console.log('Export CSV clicked');
     const csv = convertToCSV(sensorReadings);
     if (!csv) {
       toast({
@@ -86,6 +87,7 @@ export default function Navbar() {
 
   // Handle add test data
   const handleAddTestData = async () => {
+    console.log('Add test data clicked');
     try {
       await apiRequest('POST', '/api/sensor-data/dummy');
       queryClient.invalidateQueries({ queryKey: ['/api/sensor-data'] });
@@ -106,6 +108,7 @@ export default function Navbar() {
 
   // Handle refresh data
   const handleRefreshData = () => {
+    console.log('Refresh data clicked');
     queryClient.invalidateQueries({ queryKey: ['/api/sensor-data'] });
     queryClient.invalidateQueries({ queryKey: ['/api/alerts'] });
     
@@ -203,8 +206,10 @@ export default function Navbar() {
                   variant="ghost" 
                   size="sm"
                   className="p-2 lg:p-3 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 rounded-lg lg:rounded-xl group"
+                  title="Data Management"
                 >
-                  <Database size={18} className="lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <HardDrive size={18} className="lg:w-5 lg:h-5 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="ml-1 text-xs hidden sm:inline">Data</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 lg:w-64 mt-2">

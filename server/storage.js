@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from "mongodb";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const MONGODB_URI = "mongodb+srv://rudra:AMANrana123@rudra-fish-pond.b8mkjmx.mongodb.net/?retryWrites=true&w=majority&appName=Rudra-Fish-Pond";
 

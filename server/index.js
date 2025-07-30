@@ -6,8 +6,27 @@ console.log('Environment check:');
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('OPENWEATHER_API_KEY:', process.env.OPENWEATHER_API_KEY ? 'Present' : 'Missing');
 console.log('All env vars:', Object.keys(process.env).filter(key => key.includes('WEATHER') || key.includes('OPENWEATHER')));
+
 import { registerRoutes } from "./routes.js";
-import { setupVite, serveStatic, log } from "./vite.js";
+
+// Only import Vite in development
+let setupVite, serveStatic, log;
+if (process.env.NODE_ENV === 'development') {
+  const viteModule = await import("./vite.js");
+  setupVite = viteModule.setupVite;
+  serveStatic = viteModule.serveStatic;
+  log = viteModule.log;
+} else {
+  // Production logging
+  log = (message) => console.log(`${new Date().toISOString()} [SERVER] ${message}`);
+  // Simple static file serving for production
+  serveStatic = (app) => {
+    app.use(express.static('public'));
+    app.get('*', (req, res) => {
+      res.send('API Server Running');
+    });
+  };
+}
 
 const app = express();
 app.use(express.json());
@@ -57,7 +76,7 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
@@ -67,7 +86,7 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5004;
+  const port = process.env.PORT || 5000;
   server.listen({
     port,
     host: "0.0.0.0",

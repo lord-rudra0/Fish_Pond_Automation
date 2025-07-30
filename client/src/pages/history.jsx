@@ -51,10 +51,11 @@ export default function History() {
   const { startDate, endDate } = getDateRange();
 
   const { data: historicalData, isLoading } = useQuery({
-    queryKey: ['/api/sensor-data/range', { 
-      startDate: startDate.toISOString(), 
-      endDate: endDate.toISOString() 
+    queryKey: ['/api/sensor-data/demo', { 
+      startTime: startDate.toISOString(), 
+      endTime: endDate.toISOString() 
     }],
+    queryFn: () => fetch(`/api/sensor-data/demo?startTime=${startDate.toISOString()}&endTime=${endDate.toISOString()}`).then(res => res.json()),
   });
 
   // Process data for charts
@@ -144,7 +145,7 @@ export default function History() {
         </div>
         <div className="flex items-center gap-3">
           <AutoRefreshSettings />
-          <Button onClick={handleExportCSV} variant="outline" className="flex items-center mb-4">
+          <Button onClick={handleExportCSV} variant="outline" className="flex items-center mb-4 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
             <Download className="h-4 w-4 mr-2" />
             Export CSV
           </Button>

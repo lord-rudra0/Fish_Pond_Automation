@@ -83,7 +83,7 @@ export default function Signup() {
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-purple-600/10 dark:from-purple-500/10 to-transparent animate-pulse"></div>
       </div>
 
-      <div className="w-full max-w-md relative z-10">
+      <div className="w-full max-w-lg relative z-12">
         {/* Logo with Animation */}
         <div className="text-center mb-6 animate-fade-in">
           <div className="flex items-center justify-center mb-4 group">
@@ -124,7 +124,7 @@ export default function Signup() {
               Start monitoring your pond with intelligent automation
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 px-6 pb-6">
+          <CardContent className="space-y-4 px-8 pb-8">
             {error && (
               <Alert variant="destructive" className="border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20 animate-shake">
                 <AlertDescription className="text-red-800 dark:text-red-200">{error}</AlertDescription>
@@ -133,7 +133,7 @@ export default function Signup() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Name and Email in responsive grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2 min-w-0">
                   <Label htmlFor="name" className="text-gray-700 dark:text-gray-200 font-medium text-sm">Full Name</Label>
                   <div className="relative group">
@@ -146,7 +146,7 @@ export default function Signup() {
                       onChange={handleChange}
                       required
                       disabled={isLoading}
-                      className="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
+                      className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
                     />
                     <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
                   </div>
@@ -164,7 +164,7 @@ export default function Signup() {
                       onChange={handleChange}
                       required
                       disabled={isLoading}
-                      className="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
+                      className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
                     />
                     <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
                   </div>
@@ -172,7 +172,7 @@ export default function Signup() {
               </div>
 
               {/* Password and Confirm Password in responsive grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2 min-w-0">
                   <Label htmlFor="password" className="text-gray-700 dark:text-gray-200 font-medium text-sm">Password</Label>
                   <div className="relative group">
@@ -185,7 +185,7 @@ export default function Signup() {
                       onChange={handleChange}
                       required
                       disabled={isLoading}
-                      className="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
+                      className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
                     />
                     <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
                   </div>
@@ -203,7 +203,7 @@ export default function Signup() {
                       onChange={handleChange}
                       required
                       disabled={isLoading}
-                      className="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
+                      className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
                     />
                     <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
                   </div>

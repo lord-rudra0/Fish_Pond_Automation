@@ -85,7 +85,7 @@ export default function Signup() {
 
       <div className="w-full max-w-md relative z-10">
         {/* Logo with Animation */}
-        <div className="text-center mb-8 animate-fade-in">
+        <div className="text-center mb-6 animate-fade-in">
           <div className="flex items-center justify-center mb-4 group">
             <div className="relative">
               <Fish className="text-purple-600 dark:text-purple-400 mr-3 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12" size={40} />
@@ -98,17 +98,17 @@ export default function Signup() {
           <p className="text-gray-600 dark:text-gray-300 text-lg font-medium">Join the Future of Pond Monitoring</p>
           
           {/* Feature Icons */}
-          <div className="flex justify-center space-x-6 mt-6">
+          <div className="flex justify-center space-x-6 mt-4">
             <div className="flex items-center space-x-2 text-purple-600 dark:text-purple-400">
-              <Shield className="h-5 w-5 animate-pulse" />
+              <Shield className="h-4 w-4 animate-pulse" />
               <span className="text-sm font-medium">Secure</span>
             </div>
             <div className="flex items-center space-x-2 text-pink-600 dark:text-pink-400">
-              <UserCheck className="h-5 w-5 animate-pulse" style={{ animationDelay: '0.5s' }} />
+              <UserCheck className="h-4 w-4 animate-pulse" style={{ animationDelay: '0.5s' }} />
               <span className="text-sm font-medium">Easy Setup</span>
             </div>
             <div className="flex items-center space-x-2 text-rose-600 dark:text-rose-400">
-              <Sparkles className="h-5 w-5 animate-pulse" style={{ animationDelay: '1s' }} />
+              <Sparkles className="h-4 w-4 animate-pulse" style={{ animationDelay: '1s' }} />
               <span className="text-sm font-medium">Smart Features</span>
             </div>
           </div>
@@ -116,96 +116,102 @@ export default function Signup() {
 
         {/* Signup Card with Glass Effect */}
         <Card className="backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 shadow-2xl border border-white/20 dark:border-gray-700/50 transform transition-all duration-500 hover:scale-105 hover:shadow-3xl">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+          <CardHeader className="text-center pb-4 px-6 pt-6">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent mb-2">
               Create Account
             </CardTitle>
-            <CardDescription className="text-gray-600 dark:text-gray-300 text-lg">
+            <CardDescription className="text-gray-600 dark:text-gray-300 text-base">
               Start monitoring your pond with intelligent automation
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4 px-6 pb-6">
             {error && (
               <Alert variant="destructive" className="border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20 animate-shake">
                 <AlertDescription className="text-red-800 dark:text-red-200">{error}</AlertDescription>
               </Alert>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-3">
-                <Label htmlFor="name" className="text-gray-700 dark:text-gray-200 font-medium">Full Name</Label>
-                <div className="relative group">
-                  <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder="John Doe"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    disabled={isLoading}
-                    className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300"
-                  />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Name and Email in responsive grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-2 min-w-0">
+                  <Label htmlFor="name" className="text-gray-700 dark:text-gray-200 font-medium text-sm">Full Name</Label>
+                  <div className="relative group">
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      placeholder="John Doe"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      disabled={isLoading}
+                      className="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
+                    />
+                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
+                  </div>
+                </div>
+
+                <div className="space-y-2 min-w-0">
+                  <Label htmlFor="email" className="text-gray-700 dark:text-gray-200 font-medium text-sm">Email Address</Label>
+                  <div className="relative group">
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      placeholder="your@email.com"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      disabled={isLoading}
+                      className="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
+                    />
+                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label htmlFor="email" className="text-gray-700 dark:text-gray-200 font-medium">Email Address</Label>
-                <div className="relative group">
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    disabled={isLoading}
-                    className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300"
-                  />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
+              {/* Password and Confirm Password in responsive grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-2 min-w-0">
+                  <Label htmlFor="password" className="text-gray-700 dark:text-gray-200 font-medium text-sm">Password</Label>
+                  <div className="relative group">
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      disabled={isLoading}
+                      className="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
+                    />
+                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
+                  </div>
+                </div>
+
+                <div className="space-y-2 min-w-0">
+                  <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-200 font-medium text-sm">Confirm Password</Label>
+                  <div className="relative group">
+                    <Input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      required
+                      disabled={isLoading}
+                      className="w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300 text-sm"
+                    />
+                    <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
+                  </div>
                 </div>
               </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Password must be at least 8 characters long</p>
 
-              <div className="space-y-3">
-                <Label htmlFor="password" className="text-gray-700 dark:text-gray-200 font-medium">Password</Label>
-                <div className="relative group">
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    disabled={isLoading}
-                    className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300"
-                  />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Must be at least 8 characters long</p>
-              </div>
-
-              <div className="space-y-3">
-                <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-200 font-medium">Confirm Password</Label>
-                <div className="relative group">
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    disabled={isLoading}
-                    className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-4 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 transition-all duration-300 group-hover:border-purple-400 dark:group-hover:border-purple-300"
-                  />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300 pointer-events-none"></div>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-3">
+              <div className="flex items-start space-x-2 pt-1">
                 <Checkbox
                   id="agreeToTerms"
                   name="agreeToTerms"
@@ -230,7 +236,7 @@ export default function Signup() {
 
               <Button 
                 type="submit" 
-                className="w-full py-3 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-700 hover:via-pink-700 hover:to-rose-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
+                className="w-full py-3 mt-2 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:from-purple-700 hover:via-pink-700 hover:to-rose-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
                 disabled={isLoading || !formData.agreeToTerms}
               >
                 {isLoading ? (
@@ -244,8 +250,8 @@ export default function Signup() {
               </Button>
             </form>
 
-            <div className="text-center pt-6 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-gray-600 dark:text-gray-300">
+            <div className="text-center pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Already have an account?{" "}
                 <Link href="/login">
                   <span className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-semibold cursor-pointer transition-colors duration-300 underline decoration-2 underline-offset-4 hover:decoration-purple-500">

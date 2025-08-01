@@ -166,7 +166,7 @@ export default function Profile() {
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-ocean-blue to-seafoam bg-clip-text text-transparent">
                   Profile Settings
                 </h1>
-                <p className="text-lg text-muted-foreground mt-1">
+                <p className="text-lg text-gray-700 dark:text-gray-300 mt-1">
                   Manage your account settings and preferences
                 </p>
               </div>
@@ -175,7 +175,7 @@ export default function Profile() {
           <Button
             onClick={() => setIsEditing(!isEditing)}
             variant="outline"
-            className="flex items-center gap-2 hover:bg-ocean-blue hover:text-white transition-all duration-300"
+            className="flex items-center gap-2 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-ocean-blue hover:text-white transition-all duration-300"
           >
             <Edit className="h-4 w-4" />
             {isEditing ? 'Cancel' : 'Edit Profile'}
@@ -200,25 +200,25 @@ export default function Profile() {
                   </div>
                 </div>
               </div>
-              <CardTitle className="text-2xl font-bold">{userProfile?.name || 'User'}</CardTitle>
-              <CardDescription className="text-base">{userProfile?.email}</CardDescription>
+              <CardTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">{userProfile?.name || 'User'}</CardTitle>
+              <CardDescription className="text-base text-gray-600 dark:text-gray-300">{userProfile?.email}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between p-3 bg-gradient-to-r from-ocean-blue/10 to-seafoam/10 rounded-lg">
-                <span className="text-sm text-muted-foreground">Member since</span>
-                <span className="text-sm font-semibold">
+                <span className="text-sm text-gray-600 dark:text-gray-300">Member since</span>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                   {userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
               <div className="flex items-center justify-between p-3 bg-gradient-to-r from-coral/10 to-sand/10 rounded-lg">
-                <span className="text-sm text-muted-foreground">Last login</span>
-                <span className="text-sm font-semibold">
+                <span className="text-sm text-gray-600 dark:text-gray-300">Last login</span>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
                   {userProfile?.lastLogin ? new Date(userProfile.lastLogin).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
               <Separator />
               <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-lg">
-                <span className="text-sm text-muted-foreground">Account status</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">Account status</span>
                 <Badge className="bg-green-500 text-white hover:bg-green-600">Active</Badge>
               </div>
             </CardContent>
@@ -230,11 +230,11 @@ export default function Profile() {
           {/* Personal Information */}
           <Card className="cool-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
                 <User className="h-5 w-5 text-ocean-blue" />
                 Personal Information
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 Update your personal details and contact information
               </CardDescription>
             </CardHeader>
@@ -242,17 +242,18 @@ export default function Profile() {
               <form onSubmit={handleProfileUpdate} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="name">Full Name</Label>
+                    <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Full Name</Label>
                     <Input
                       id="name"
                       value={formData.name}
                       onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       disabled={!isEditing}
                       placeholder="Enter your full name"
+                      className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email Address</Label>
+                    <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email Address</Label>
                     <Input
                       id="email"
                       type="email"
@@ -260,18 +261,19 @@ export default function Profile() {
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                       disabled={!isEditing}
                       placeholder="Enter your email"
+                      className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     />
                   </div>
                 </div>
                 {isEditing && (
-                                  <Button 
-                  type="submit" 
-                  disabled={updateProfileMutation.isPending}
-                  className="ocean-gradient text-white hover:shadow-lg hover:shadow-ocean-blue/25 transition-all duration-300"
-                >
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Changes
-                </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={updateProfileMutation.isPending}
+                    className="ocean-gradient text-white hover:shadow-lg hover:shadow-ocean-blue/25 transition-all duration-300"
+                  >
+                    <Save className="mr-2 h-4 w-4" />
+                    Save Changes
+                  </Button>
                 )}
               </form>
             </CardContent>
@@ -280,18 +282,18 @@ export default function Profile() {
           {/* Security Settings */}
           <Card className="cool-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
                 <Shield className="h-5 w-5 text-coral" />
                 Security Settings
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 Change your password and manage security preferences
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 <div>
-                  <Label htmlFor="currentPassword">Current Password</Label>
+                  <Label htmlFor="currentPassword" className="text-gray-700 dark:text-gray-300">Current Password</Label>
                   <div className="relative">
                     <Input
                       id="currentPassword"
@@ -299,6 +301,7 @@ export default function Profile() {
                       value={formData.currentPassword}
                       onChange={(e) => setFormData(prev => ({ ...prev, currentPassword: e.target.value }))}
                       placeholder="Enter current password"
+                      className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     />
                     <Button
                       type="button"
@@ -313,23 +316,25 @@ export default function Profile() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="newPassword">New Password</Label>
+                    <Label htmlFor="newPassword" className="text-gray-700 dark:text-gray-300">New Password</Label>
                     <Input
                       id="newPassword"
                       type={showPassword ? "text" : "password"}
                       value={formData.newPassword}
                       onChange={(e) => setFormData(prev => ({ ...prev, newPassword: e.target.value }))}
                       placeholder="Enter new password"
+                      className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-300">Confirm New Password</Label>
                     <Input
                       id="confirmPassword"
                       type={showPassword ? "text" : "password"}
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       placeholder="Confirm new password"
+                      className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-300 dark:border-gray-600"
                     />
                   </div>
                 </div>
@@ -348,19 +353,19 @@ export default function Profile() {
           {/* Notification Preferences */}
           <Card className="cool-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
                 <Bell className="h-5 w-5 text-seafoam" />
                 Notification Preferences
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 Configure how you receive alerts and notifications
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-sm font-medium">Email Notifications</Label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <Label className="text-sm font-medium text-gray-800 dark:text-gray-200">Email Notifications</Label>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     Receive alerts via email
                   </p>
                 </div>
@@ -368,8 +373,8 @@ export default function Profile() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-sm font-medium">Critical Alerts</Label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <Label className="text-sm font-medium text-gray-800 dark:text-gray-200">Critical Alerts</Label>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     Immediate notifications for critical sensor readings
                   </p>
                 </div>
@@ -377,8 +382,8 @@ export default function Profile() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-sm font-medium">Weekly Reports</Label>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <Label className="text-sm font-medium text-gray-800 dark:text-gray-200">Weekly Reports</Label>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     Receive weekly summary reports
                   </p>
                 </div>

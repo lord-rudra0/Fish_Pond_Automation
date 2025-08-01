@@ -65,7 +65,7 @@ export default function Login() {
 
       <div className="w-full max-w-md relative z-10">
         {/* Logo with Animation */}
-        <div className="text-center mb-8 animate-fade-in">
+        <div className="text-center mb-6 animate-fade-in">
           <div className="flex items-center justify-center mb-4 group">
             <div className="relative">
               <Fish className="text-blue-600 dark:text-blue-400 mr-3 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12" size={40} />
@@ -78,17 +78,17 @@ export default function Login() {
           <p className="text-gray-600 dark:text-gray-300 text-lg font-medium">Fish Pond Automation System</p>
           
           {/* Feature Icons */}
-          <div className="flex justify-center space-x-6 mt-6">
+          <div className="flex justify-center space-x-6 mt-4">
             <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400">
-              <Waves className="h-5 w-5 animate-pulse" />
+              <Waves className="h-4 w-4 animate-pulse" />
               <span className="text-sm font-medium">Smart Monitoring</span>
             </div>
             <div className="flex items-center space-x-2 text-cyan-600 dark:text-cyan-400">
-              <Droplets className="h-5 w-5 animate-pulse" style={{ animationDelay: '0.5s' }} />
+              <Droplets className="h-4 w-4 animate-pulse" style={{ animationDelay: '0.5s' }} />
               <span className="text-sm font-medium">Water Quality</span>
             </div>
             <div className="flex items-center space-x-2 text-teal-600 dark:text-teal-400">
-              <Thermometer className="h-5 w-5 animate-pulse" style={{ animationDelay: '1s' }} />
+              <Thermometer className="h-4 w-4 animate-pulse" style={{ animationDelay: '1s' }} />
               <span className="text-sm font-medium">Temperature</span>
             </div>
           </div>
@@ -96,24 +96,24 @@ export default function Login() {
 
         {/* Login Card with Glass Effect */}
         <Card className="backdrop-blur-lg bg-white/80 dark:bg-gray-900/80 shadow-2xl border border-white/20 dark:border-gray-700/50 transform transition-all duration-500 hover:scale-105 hover:shadow-3xl">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 bg-clip-text text-transparent">
+          <CardHeader className="text-center pb-4 px-6 pt-6">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-400 bg-clip-text text-transparent mb-2">
               Welcome Back
             </CardTitle>
-            <CardDescription className="text-gray-600 dark:text-gray-300 text-lg">
+            <CardDescription className="text-gray-600 dark:text-gray-300 text-base">
               Sign in to access your pond monitoring dashboard
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-5 px-6 pb-6">
             {error && (
               <Alert variant="destructive" className="border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20 animate-shake">
                 <AlertDescription className="text-red-800 dark:text-red-200">{error}</AlertDescription>
               </Alert>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-3">
-                <Label htmlFor="email" className="text-gray-700 dark:text-gray-200 font-medium">Email Address</Label>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-700 dark:text-gray-200 font-medium text-sm">Email Address</Label>
                 <div className="relative group">
                   <Input
                     id="email"
@@ -124,14 +124,14 @@ export default function Login() {
                     onChange={handleChange}
                     required
                     disabled={isLoading}
-                    className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300 group-hover:border-blue-400 dark:group-hover:border-blue-300"
+                    className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300 group-hover:border-blue-400 dark:group-hover:border-blue-300"
                   />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 to-cyan-500/0 group-hover:from-blue-500/10 group-hover:to-cyan-500/10 transition-all duration-300 pointer-events-none"></div>
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/0 to-cyan-500/0 group-hover:from-blue-500/10 group-hover:to-cyan-500/10 transition-all duration-300 pointer-events-none"></div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label htmlFor="password" className="text-gray-700 dark:text-gray-200 font-medium">Password</Label>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700 dark:text-gray-200 font-medium text-sm">Password</Label>
                 <div className="relative group">
                   <Input
                     id="password"
@@ -142,14 +142,14 @@ export default function Login() {
                     onChange={handleChange}
                     required
                     disabled={isLoading}
-                    className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300 group-hover:border-blue-400 dark:group-hover:border-blue-300"
+                    className="w-full px-4 py-3 bg-white/50 dark:bg-gray-800/50 border-2 border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300 group-hover:border-blue-400 dark:group-hover:border-blue-300"
                   />
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 to-cyan-500/0 group-hover:from-blue-500/10 group-hover:to-cyan-500/10 transition-all duration-300 pointer-events-none"></div>
+                  <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/0 to-cyan-500/0 group-hover:from-blue-500/10 group-hover:to-cyan-500/10 transition-all duration-300 pointer-events-none"></div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex items-center space-x-2">
                   <Checkbox
                     id="rememberMe"
                     name="rememberMe"
@@ -160,11 +160,11 @@ export default function Login() {
                     disabled={isLoading}
                     className="border-2 border-gray-300 dark:border-gray-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
                   />
-                  <Label htmlFor="rememberMe" className="text-gray-700 dark:text-gray-200 font-medium cursor-pointer">Remember me</Label>
+                  <Label htmlFor="rememberMe" className="text-gray-700 dark:text-gray-200 font-medium cursor-pointer text-sm">Remember me</Label>
                 </div>
                 <Button 
                   variant="link" 
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors duration-300 p-0"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors duration-300 p-0 text-sm"
                 >
                   Forgot password?
                 </Button>
@@ -172,7 +172,7 @@ export default function Login() {
 
               <Button 
                 type="submit" 
-                className="w-full py-3 bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
+                className="w-full py-3 mt-2 bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -186,8 +186,8 @@ export default function Login() {
               </Button>
             </form>
 
-            <div className="text-center pt-6 border-t border-gray-200 dark:border-gray-700">
-              <p className="text-gray-600 dark:text-gray-300">
+            <div className="text-center pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Don't have an account?{" "}
                 <Link href="/signup">
                   <span className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold cursor-pointer transition-colors duration-300 underline decoration-2 underline-offset-4 hover:decoration-blue-500">

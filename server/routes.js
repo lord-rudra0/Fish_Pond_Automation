@@ -378,7 +378,7 @@ async function registerRoutes(app) {
 
   app.delete("/api/thresholds/:id", authenticateToken, async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
+      const id = req.params.id;
       const deleted = await storage.deleteThreshold(id);
       
       if (!deleted) {
@@ -387,6 +387,7 @@ async function registerRoutes(app) {
       
       res.json({ message: "Threshold deleted successfully" });
     } catch (error) {
+      console.error('Error deleting threshold:', error);
       res.status(500).json({ message: error.message });
     }
   });

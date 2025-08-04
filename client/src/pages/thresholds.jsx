@@ -32,7 +32,10 @@ export default function Thresholds() {
   });
 
   const { data: thresholds = [], isLoading } = useQuery({
-    queryKey: ['/api/thresholds']
+    queryKey: ['/api/thresholds'],
+    onSuccess: (data) => {
+      console.log('Thresholds data:', data);
+    }
   });
 
   const createThresholdMutation = useMutation({
@@ -263,8 +266,14 @@ export default function Thresholds() {
                   id="alertEnabled"
                   checked={newThreshold.alertEnabled}
                   onCheckedChange={(checked) => setNewThreshold(prev => ({ ...prev, alertEnabled: checked }))}
+                  className="data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-200 dark:data-[state=unchecked]:bg-gray-600"
                 />
-                <Label htmlFor="alertEnabled" className="text-gray-900 dark:text-white">Enable alerts for this threshold</Label>
+                <Label htmlFor="alertEnabled" className="text-gray-900 dark:text-gray-200 font-medium">
+                  {newThreshold.alertEnabled ? 'Alerts On' : 'Alerts Off'}
+                  <span className="block text-sm font-normal text-gray-500 dark:text-gray-400">
+                    {newThreshold.alertEnabled ? 'You will receive notifications' : 'No notifications will be sent'}
+                  </span>
+                </Label>
               </div>
             </form>
           </CardContent>
@@ -349,12 +358,14 @@ export default function Thresholds() {
                               type="button" 
                               variant="outline" 
                               onClick={() => setEditingThreshold(null)}
+                              className="text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600"
                             >
                               Cancel
                             </Button>
                             <Button 
                               type="submit" 
                               disabled={updateThresholdMutation.isPending}
+                              className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white transition-colors"
                             >
                               <Save className="mr-2 h-4 w-4" />
                               Save Changes
@@ -376,8 +387,11 @@ export default function Thresholds() {
                                   {threshold.minValue !== null && threshold.maxValue !== null && ' • '}
                                   {threshold.maxValue !== null && `Max: ${threshold.maxValue} ${getSensorUnit(threshold.sensorType)}`}
                                 </span>
-                                <Badge variant={threshold.alertEnabled ? "default" : "secondary"}>
-                                  {threshold.alertEnabled ? "Alerts On" : "Alerts Off"}
+                                <Badge 
+                                  variant={threshold.alertEnabled ? "default" : "secondary"}
+                                  className={`${threshold.alertEnabled ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}
+                                >
+                                  {threshold.alertEnabled ? 'Alerts On' : 'Alerts Off'}
                                 </Badge>
                               </div>
                             </div>
@@ -389,15 +403,29 @@ export default function Thresholds() {
                             variant="outline"
                             size="sm"
                             onClick={() => startEditing(threshold)}
+                            className="text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
                           >
                             Edit
                           </Button>
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => deleteThresholdMutation.mutate(threshold.id)}
+                            onClick={() => {
+                              // First try _id, then fall back to id
+                              const idToDelete = threshold._id || threshold.id;
+                              if (!idToDelete) {
+                                console.error('Threshold ID is undefined:', threshold);
+                                toast({
+                                  title: 'Error',
+                                  description: 'Could not delete threshold: Missing ID',
+                                  variant: 'destructive',
+                                });
+                                return;
+                              }
+                              deleteThresholdMutation.mutate(idToDelete);
+                            }}
                             disabled={deleteThresholdMutation.isPending}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                            className="text-red-600 hover:text-white hover:bg-red-600 dark:text-red-400 dark:hover:text-white dark:hover:bg-red-600 dark:border-red-600 hover:border-red-600 dark:hover:border-red-600 transition-colors"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>

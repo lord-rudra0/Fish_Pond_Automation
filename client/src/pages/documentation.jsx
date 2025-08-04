@@ -1,3 +1,4 @@
+import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -178,12 +179,12 @@ export default function Documentation() {
               <Button
                 key={index}
                 variant="outline"
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-2 bg-white dark:bg-gray-800 text-gray-800 dark:text-white border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 asChild
               >
-                <a href={link.href} target="_blank" rel="noopener noreferrer">
-                  {link.icon}
-                  <span>{link.title}</span>
+                <a href={link.href} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2">
+                  {React.cloneElement(link.icon, { className: 'h-4 w-4 text-gray-700 dark:text-gray-300' })}
+                  <span className="text-gray-700 dark:text-gray-200">{link.title}</span>
                 </a>
               </Button>
             ))}
@@ -196,7 +197,7 @@ export default function Documentation() {
             <input
               type="text"
               placeholder="Search documentation..."
-              className="w-full px-4 py-3 pl-12 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 pl-12 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           </div>
@@ -206,12 +207,12 @@ export default function Documentation() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sections.map((section, sectionIndex) => (
             <Card key={sectionIndex} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-              <CardHeader>
+              <CardHeader className="border-b border-gray-100 dark:border-gray-700">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500">
-                    {section.icon}
+                    {React.cloneElement(section.icon, { className: 'h-5 w-5 text-white' })}
                   </div>
-                  <CardTitle className="text-xl">{section.title}</CardTitle>
+                  <CardTitle className="text-xl text-gray-900 dark:text-white">{section.title}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -239,52 +240,52 @@ export default function Documentation() {
         <div className="mt-12">
           <Card className="border-0 shadow-md bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Shield className="h-6 w-6" />
+              <CardTitle className="flex items-center space-x-2 text-gray-900 dark:text-white">
+                <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 <span>Additional Resources</span>
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 Download guides, watch tutorials, and get support
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Button variant="outline" className="flex items-center space-x-2 h-auto p-4" asChild>
-                  <a href="/docs/installation-guide.pdf" download>
-                    <Download className="h-5 w-5" />
+                <Button variant="outline" className="flex items-center space-x-2 h-auto p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600" asChild>
+                  <a href="/docs/installation-guide.pdf" download className="w-full">
+                    <Download className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                     <div className="text-left">
-                      <div className="font-semibold">Installation Guide</div>
-                      <div className="text-xs text-gray-500">PDF Download</div>
+                      <div className="font-semibold text-gray-800 dark:text-gray-100">Installation Guide</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">PDF Download</div>
                     </div>
                   </a>
                 </Button>
                 
-                <Button variant="outline" className="flex items-center space-x-2 h-auto p-4" asChild>
-                  <a href="/docs/troubleshooting.pdf" download>
-                    <AlertTriangle className="h-5 w-5" />
+                <Button variant="outline" className="flex items-center space-x-2 h-auto p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600" asChild>
+                  <a href="/docs/troubleshooting.pdf" download className="w-full">
+                    <AlertTriangle className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                     <div className="text-left">
-                      <div className="font-semibold">Troubleshooting</div>
-                      <div className="text-xs text-gray-500">Common Issues</div>
+                      <div className="font-semibold text-gray-800 dark:text-gray-100">Troubleshooting</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Common Issues</div>
                     </div>
                   </a>
                 </Button>
                 
-                <Button variant="outline" className="flex items-center space-x-2 h-auto p-4" asChild>
-                  <a href="/contact">
-                    <Users className="h-5 w-5" />
+                <Button variant="outline" className="flex items-center space-x-2 h-auto p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600" asChild>
+                  <a href="/contact" className="w-full">
+                    <Users className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                     <div className="text-left">
-                      <div className="font-semibold">Contact Support</div>
-                      <div className="text-xs text-gray-500">Get Help</div>
+                      <div className="font-semibold text-gray-800 dark:text-gray-100">Contact Support</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Get Help</div>
                     </div>
                   </a>
                 </Button>
                 
-                <Button variant="outline" className="flex items-center space-x-2 h-auto p-4" asChild>
-                  <a href="/help">
-                    <FileText className="h-5 w-5" />
+                <Button variant="outline" className="flex items-center space-x-2 h-auto p-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600" asChild>
+                  <a href="/help" className="w-full">
+                    <FileText className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                     <div className="text-left">
-                      <div className="font-semibold">Help Center</div>
-                      <div className="text-xs text-gray-500">FAQs & Guides</div>
+                      <div className="font-semibold text-gray-800 dark:text-gray-100">Help Center</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">FAQs & Guides</div>
                     </div>
                   </a>
                 </Button>

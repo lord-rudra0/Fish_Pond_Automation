@@ -51,7 +51,7 @@ export default function Signup() {
     }
 
     try {
-      await authService.register(formData.name, formData.email, formData.password);
+      await authService.register(formData.email, formData.password, formData.name);
       toast({
         title: "Account created successfully!",
         description: "Welcome to AquaWatch! You can now sign in.",

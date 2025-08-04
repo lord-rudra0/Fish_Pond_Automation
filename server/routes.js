@@ -5,6 +5,38 @@ import fetch from 'node-fetch';
 
 const JWT_SECRET = "your-secret-key-here-change-this-in-production";
 
+// Schema validation for sensor data
+const insertSensorDataSchema = {
+  parse: (data) => {
+    const { userId, ph, waterLevel, temperature, nh3, turbidity } = data;
+    if (!userId) throw new Error('userId is required');
+    return {
+      userId,
+      ph: ph !== undefined ? parseFloat(ph) : null,
+      waterLevel: waterLevel !== undefined ? parseFloat(waterLevel) : null,
+      temperature: temperature !== undefined ? parseFloat(temperature) : null,
+      nh3: nh3 !== undefined ? parseFloat(nh3) : null,
+      turbidity: turbidity !== undefined ? parseFloat(turbidity) : null
+    };
+  }
+};
+
+// Schema validation for threshold data
+const insertThresholdSchema = {
+  parse: (data) => {
+    const { userId, sensorType, minValue, maxValue, alertEnabled } = data;
+    if (!userId) throw new Error('userId is required');
+    if (!sensorType) throw new Error('sensorType is required');
+    return {
+      userId,
+      sensorType,
+      minValue: minValue !== undefined ? parseFloat(minValue) : null,
+      maxValue: maxValue !== undefined ? parseFloat(maxValue) : null,
+      alertEnabled: alertEnabled !== undefined ? Boolean(alertEnabled) : true
+    };
+  }
+};
+
 // Middleware to verify JWT token
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -210,6 +242,97 @@ async function registerRoutes(app) {
       res.json(readings);
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Simple test route to insert one sensor reading
+  app.post("/api/test-single-reading", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.user.userId;
+      console.log('Creating test reading for user:', userId);
+      
+      const sensorData = {
+        userId,
+        ph: 7.2,
+        waterLevel: 85.5,
+        temperature: 26.3,
+        nh3: 0.25,
+        turbidity: 8.7,
+        timestamp: new Date()
+      };
+      
+      console.log('Sensor data to insert:', sensorData);
+      const reading = await storage.createSensorReading(sensorData);
+      console.log('Inserted reading:', reading);
+      
+      // Verify it was inserted by querying back
+      const allReadings = await storage.getSensorReadings(userId, 10);
+      console.log('All readings for user:', allReadings);
+      
+      res.json({ 
+        message: 'Test reading created successfully',
+        reading,
+        totalReadings: allReadings.length,
+        allReadings
+      });
+    } catch (error) {
+      console.error('Test reading error:', error);
+      res.status(500).json({ message: error.message, stack: error.stack });
+    }
+  });
+
+  // Test route to generate sample sensor data for the last 24 hours
+  app.post("/api/generate-test-data", authenticateToken, async (req, res) => {
+    try {
+      const userId = req.user.userId;
+      console.log('Generating test data for user:', userId);
+      const now = new Date();
+      const readings = [];
+      
+      // Generate 24 data points (one per hour for the last 24 hours)
+      for (let i = 0; i < 24; i++) {
+        const timestamp = new Date(now.getTime() - (i * 60 * 60 * 1000)); // i hours ago
+        
+        // Generate realistic sensor values with some variation
+        const baseValues = {
+          ph: 7.0 + (Math.random() - 0.5) * 2, // pH between 6-8
+          waterLevel: 80 + (Math.random() - 0.5) * 20, // Water level between 70-90%
+          temperature: 25 + (Math.random() - 0.5) * 10, // Temperature between 20-30°C
+          nh3: 0.1 + Math.random() * 0.4, // NH3 between 0.1-0.5 ppm
+          turbidity: 5 + Math.random() * 10 // Turbidity between 5-15 NTU
+        };
+        
+        const sensorData = {
+          userId,
+          ph: parseFloat(baseValues.ph.toFixed(2)),
+          waterLevel: parseFloat(baseValues.waterLevel.toFixed(1)),
+          temperature: parseFloat(baseValues.temperature.toFixed(1)),
+          nh3: parseFloat(baseValues.nh3.toFixed(3)),
+          turbidity: parseFloat(baseValues.turbidity.toFixed(1)),
+          timestamp
+        };
+        
+        console.log(`Creating reading ${i + 1}/24:`, sensorData);
+        const reading = await storage.createSensorReading(sensorData);
+        readings.push(reading);
+      }
+      
+      console.log(`Successfully generated ${readings.length} readings`);
+      
+      // Verify data was inserted
+      const allReadings = await storage.getSensorReadings(userId, 50);
+      console.log(`Total readings in database for user: ${allReadings.length}`);
+      
+      res.json({ 
+        message: `Generated ${readings.length} test sensor readings for the last 24 hours`,
+        count: readings.length,
+        totalInDatabase: allReadings.length,
+        firstReading: readings[0],
+        lastReading: readings[readings.length - 1]
+      });
+    } catch (error) {
+      console.error('Test data generation error:', error);
+      res.status(500).json({ message: error.message, stack: error.stack });
     }
   });
 

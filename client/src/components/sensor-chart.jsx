@@ -26,14 +26,31 @@ export default function SensorChart() {
   const [selectedSensor, setSelectedSensor] = useState('ph');
   const { refreshInterval } = useAutoRefresh();
   
-  // Get data for the last 24 hours
-  const endTime = new Date();
-  const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
+  // Stabilize the time range to prevent constant re-fetching
+  const timeRange = useMemo(() => {
+    const endTime = new Date();
+    const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
+    return {
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString()
+    };
+  }, [Math.floor(Date.now() / (5 * 60 * 1000))]); // Update every 5 minutes
 
   const { data: sensorData = [], isLoading, error } = useQuery({
-    queryKey: ['/api/sensor-data/demo', '24h'],
-    queryFn: () => fetch(`/api/sensor-data/demo?startTime=${startTime.toISOString()}&endTime=${endTime.toISOString()}`).then(res => res.json()),
-    refetchInterval: refreshInterval, // Use user-configured interval
+    queryKey: ['/api/sensor-data/range', '24h', timeRange.startTime, timeRange.endTime],
+    queryFn: async () => {
+      const response = await fetch(`/api/sensor-data/range?startTime=${timeRange.startTime}&endTime=${timeRange.endTime}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch sensor data');
+      }
+      return response.json();
+    },
+    refetchInterval: Math.max(refreshInterval || 30000, 30000), // Minimum 30 seconds
+    staleTime: 30000, // Consider data fresh for 30 seconds
   });
 
   // Debug: Log the response structure

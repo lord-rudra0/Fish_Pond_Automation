@@ -89,7 +89,9 @@ export default function Navbar() {
   const handleAddTestData = async () => {
     console.log('Add test data clicked');
     try {
-      await apiRequest('POST', '/api/sensor-data/dummy');
+      const response = await apiRequest('POST', '/api/generate-test-data');
+      const data = await response.json();
+      console.log('Test data generated:', data);
       queryClient.invalidateQueries({ queryKey: ['/api/sensor-data'] });
       queryClient.invalidateQueries({ queryKey: ['/api/alerts'] });
       

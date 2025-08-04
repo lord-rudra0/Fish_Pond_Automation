@@ -188,8 +188,7 @@ export default function Dashboard() {
 
   // Fetch sensor data
   const { data: sensorReadings = [], isLoading: isLoadingSensors, refetch: refetchSensors } = useQuery({
-    queryKey: ['/api/sensor-data'],
-    queryParams: { limit: 50 },
+    queryKey: ['/api/sensor-data', { limit: 50 }],
     refetchInterval: refreshInterval, // Use user-configured interval
   });
 
@@ -207,6 +206,30 @@ export default function Dashboard() {
   const { data: unacknowledgedAlerts = [] } = useQuery({
     queryKey: ['/api/alerts/unacknowledged'],
     refetchInterval: refreshInterval, // Use user-configured interval
+  });
+
+  // Test data generation mutation
+  const generateTestDataMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('POST', '/api/generate-test-data');
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Test Data Generated!",
+        description: `Created ${data.count} sensor readings. Total in database: ${data.totalInDatabase}`,
+      });
+      // Refetch sensor data to update the UI
+      refetchSensors();
+      queryClient.invalidateQueries({ queryKey: ['/api/sensor-data'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const hasActiveAlerts = unacknowledgedAlerts.length > 0;
@@ -233,6 +256,14 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="mt-4 sm:mt-0 flex space-x-3">
+              <Button 
+                onClick={() => generateTestDataMutation.mutate()}
+                disabled={generateTestDataMutation.isPending}
+                variant="outline"
+                className="bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+              >
+                {generateTestDataMutation.isPending ? 'Generating...' : 'Generate Test Data'}
+              </Button>
               <AutoRefreshSettings />
             </div>
           </div>

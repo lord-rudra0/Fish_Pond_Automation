@@ -91,7 +91,7 @@ class DatabaseStorage {
     const database = await connectToDatabase();
     const sensorData = {
       ...data,
-      timestamp: new Date()
+      timestamp: data.timestamp || new Date()
     };
     const result = await database.collection("sensorData").insertOne(sensorData);
     return { ...sensorData, _id: result.insertedId };

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { authService } from "../lib/auth";
-import { Bell, Fish, ChevronDown, User, Settings, LogOut, Menu, X, Sun, Moon, FileText, HelpCircle, MessageCircle, Download, Plus, Database, RefreshCw, HardDrive } from "lucide-react";
+import { Bell, Fish, ChevronDown, User, Settings, LogOut, Menu, X, Sun, Moon, Download, RefreshCw, HardDrive } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -85,28 +85,7 @@ export default function Navbar() {
     });
   };
 
-  // Handle add test data
-  const handleAddTestData = async () => {
-    console.log('Add test data clicked');
-    try {
-      const response = await apiRequest('POST', '/api/generate-test-data');
-      const data = await response.json();
-      console.log('Test data generated:', data);
-      queryClient.invalidateQueries({ queryKey: ['/api/sensor-data'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/alerts'] });
-      
-      toast({
-        title: "Test data added",
-        description: "New sensor reading has been generated successfully.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to add test data",
-        variant: "destructive",
-      });
-    }
-  };
+
 
   // Handle refresh data
   const handleRefreshData = () => {
@@ -233,13 +212,7 @@ export default function Navbar() {
                     <p className="text-xs text-gray-600 dark:text-gray-300">Download sensor data</p>
                   </div>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleAddTestData} className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <Plus className="mr-3 h-4 w-4 text-orange-500" />
-                  <div>
-                    <span className="font-medium">Add Test Data</span>
-                    <p className="text-xs text-gray-600 dark:text-gray-300">Generate sample readings</p>
-                  </div>
-                </DropdownMenuItem>
+
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -295,34 +268,8 @@ export default function Navbar() {
                     </div>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <Link href="/documentation" className="flex items-center">
-                    <FileText className="mr-3 h-4 w-4 text-blue-500" />
-                    <div>
-                      <span className="font-medium">Documentation</span>
-                      <p className="text-xs text-gray-600 dark:text-gray-300">User guides & manuals</p>
-                    </div>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <Link href="/help" className="flex items-center">
-                    <HelpCircle className="mr-3 h-4 w-4 text-green-500" />
-                    <div>
-                      <span className="font-medium">Help Center</span>
-                      <p className="text-xs text-gray-600 dark:text-gray-300">FAQs & support</p>
-                    </div>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="py-3 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <Link href="/contact" className="flex items-center">
-                    <MessageCircle className="mr-3 h-4 w-4 text-purple-500" />
-                    <div>
-                      <span className="font-medium">Contact Us</span>
-                      <p className="text-xs text-gray-600 dark:text-gray-300">Get in touch</p>
-                    </div>
-                  </Link>
-                </DropdownMenuItem>
+
+
                 <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-600" />
                 <DropdownMenuItem onClick={handleLogout} className="py-3 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20">
                   <LogOut className="mr-3 h-4 w-4" />
@@ -393,24 +340,7 @@ export default function Navbar() {
                       <span>Alerts History</span>
                     </div>
                   </Link>
-                  <Link href="/documentation">
-                    <div className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300">
-                      <FileText className="mr-3 h-4 w-4" />
-                      <span>Documentation</span>
-                    </div>
-                  </Link>
-                  <Link href="/help">
-                    <div className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300">
-                      <HelpCircle className="mr-3 h-4 w-4" />
-                      <span>Help Center</span>
-                    </div>
-                  </Link>
-                  <Link href="/contact">
-                    <div className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-300">
-                      <MessageCircle className="mr-3 h-4 w-4" />
-                      <span>Contact Us</span>
-                    </div>
-                  </Link>
+
                   
                   {/* Data Management Section */}
                   <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
@@ -437,16 +367,7 @@ export default function Navbar() {
                       <Download className="mr-3 h-4 w-4 text-green-500" />
                       <span>Export CSV</span>
                     </div>
-                    <div 
-                      className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-all duration-300 cursor-pointer"
-                      onClick={() => {
-                        handleAddTestData();
-                        setIsMobileMenuOpen(false);
-                      }}
-                    >
-                      <Plus className="mr-3 h-4 w-4 text-orange-500" />
-                      <span>Add Test Data</span>
-                    </div>
+
                   </div>
                   
                   <div 

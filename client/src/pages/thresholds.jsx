@@ -297,7 +297,7 @@ export default function Thresholds() {
               {thresholds.map((threshold) => (
                 <Card key={threshold.id} className="bg-white dark:bg-gray-900">
                   <CardContent className="p-6">
-                    {editingThreshold?.id === threshold.id ? (
+                    {editingThreshold && editingThreshold.id === threshold.id ? (
                       <form onSubmit={handleUpdateThreshold} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           <div>
@@ -314,7 +314,7 @@ export default function Thresholds() {
                               type="number"
                               step="0.1"
                               placeholder="Optional"
-                              value={editingThreshold.minValue}
+                              value={editingThreshold?.minValue || ''}
                               onChange={(e) => setEditingThreshold(prev => ({ ...prev, minValue: e.target.value }))}
                               className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
                             />
@@ -327,7 +327,7 @@ export default function Thresholds() {
                               type="number"
                               step="0.1"
                               placeholder="Optional"
-                              value={editingThreshold.maxValue}
+                              value={editingThreshold?.maxValue || ''}
                               onChange={(e) => setEditingThreshold(prev => ({ ...prev, maxValue: e.target.value }))}
                               className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
                             />
@@ -338,7 +338,7 @@ export default function Thresholds() {
                           <div className="flex items-center space-x-2">
                             <Switch
                               id="editAlertEnabled"
-                              checked={editingThreshold.alertEnabled}
+                              checked={editingThreshold?.alertEnabled || false}
                               onCheckedChange={(checked) => setEditingThreshold(prev => ({ ...prev, alertEnabled: checked }))}
                             />
                             <Label htmlFor="editAlertEnabled" className="text-gray-900 dark:text-white">Enable alerts</Label>

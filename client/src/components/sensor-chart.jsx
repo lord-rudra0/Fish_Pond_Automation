@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { useAutoRefresh } from "@/hooks/use-auto-refresh";
-import { apiRequest } from "@/lib/queryClient";
 
 const sensorLabels = {
   ph: "pH Level",

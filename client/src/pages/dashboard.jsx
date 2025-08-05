@@ -59,13 +59,9 @@ function WeatherWidget() {
       url += `?lat=${location.lat}&lon=${location.lon}`;
     }
     
-    fetch(url)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        }
-        return res.json();
-      })
+    // Use the apiRequest function which includes the base URL
+    apiRequest('GET', url)
+      .then(res => res.json())
       .then(data => {
         console.log('Weather data received:', data);
         if (data.error) {

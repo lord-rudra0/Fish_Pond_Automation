@@ -152,6 +152,7 @@ async function registerRoutes(app) {
 
   // Weather endpoint
   app.get("/api/weather", async (req, res) => {
+    console.log('Weather API called with params:', req.query);
     try {
       const { city, lat, lon } = req.query;
       let weatherData;

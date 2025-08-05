@@ -23,8 +23,6 @@ async function throwIfResNotOk(res) {
   }
 }
 
-const API_BASE_URL = 'https://fish-pond-automation-w87h.vercel.app';
-
 export async function apiRequest(
   method,
   url,
@@ -38,10 +36,6 @@ export async function apiRequest(
     headers["Content-Type"] = "application/json";
   }
 
-  // Prepend API_BASE_URL to relative URLs
-  const fullUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
-  
-  const res = await fetch(fullUrl, {
   // Use config.apiBaseUrl for production, fallback to relative URL for development
   const fullUrl = url.startsWith('/api') && config.apiBaseUrl 
     ? `${config.apiBaseUrl}${url}` 

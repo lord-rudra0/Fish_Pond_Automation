@@ -1,5 +1,6 @@
 import { QueryClient } from "@tanstack/react-query";
 import { authService } from "./auth.js";
+import { config } from "./config.js";
 
 async function throwIfResNotOk(res) {
   if (!res.ok) {
@@ -35,7 +36,12 @@ export async function apiRequest(
     headers["Content-Type"] = "application/json";
   }
 
-  const res = await fetch(url, {
+  // Use config.apiBaseUrl for production, fallback to relative URL for development
+  const fullUrl = url.startsWith('/api') && config.apiBaseUrl 
+    ? `${config.apiBaseUrl}${url}` 
+    : url;
+
+  const res = await fetch(fullUrl, {
     method,
     headers,
     body: data ? JSON.stringify(data) : undefined,
@@ -78,7 +84,12 @@ export const getQueryFn = ({ on401: unauthorizedBehavior }) =>
       }
     }
 
-    const res = await fetch(url, {
+    // Use config.apiBaseUrl for production, fallback to relative URL for development
+    const fullUrl = url.startsWith('/api') && config.apiBaseUrl 
+      ? `${config.apiBaseUrl}${url}` 
+      : url;
+
+    const res = await fetch(fullUrl, {
       headers: {
         ...authService.getAuthHeaders()
       }

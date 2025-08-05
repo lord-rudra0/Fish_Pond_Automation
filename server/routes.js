@@ -150,48 +150,7 @@ async function registerRoutes(app) {
     }
   });
 
-  // Weather endpoint
-  app.get("/api/weather", async (req, res) => {
-    console.log('Weather API called with params:', req.query);
-    try {
-      const { city, lat, lon } = req.query;
-      let weatherData;
-      
-      if (city) {
-        // Mock weather response for city
-        weatherData = {
-          location: city,
-          temperature: Math.round(20 + Math.random() * 15), // 20-35°C
-          humidity: Math.round(40 + Math.random() * 40), // 40-80%
-          windSpeed: (Math.random() * 10).toFixed(1), // 0-10 m/s
-          description: ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy'][Math.floor(Math.random() * 4)],
-          icon: '01d', // Weather icon code
-          timestamp: new Date().toISOString()
-        };
-      } else if (lat && lon) {
-        // Mock weather response for coordinates
-        weatherData = {
-          location: `Lat: ${lat}, Lon: ${lon}`,
-          temperature: Math.round(15 + Math.random() * 20), // 15-35°C
-          humidity: Math.round(30 + Math.random() * 50), // 30-80%
-          windSpeed: (Math.random() * 12).toFixed(1), // 0-12 m/s
-          description: ['Clear', 'Mostly Sunny', 'Partly Cloudy', 'Mostly Cloudy'][Math.floor(Math.random() * 4)],
-          icon: '02d', // Weather icon code
-          timestamp: new Date().toISOString()
-        };
-      } else {
-        return res.status(400).json({ message: 'Either city or lat/lon parameters are required' });
-      }
-      
-      res.json(weatherData);
-    } catch (error) {
-      console.error('Weather API error:', error);
-      res.status(500).json({ 
-        message: 'Error fetching weather data',
-        error: error.message 
-      });
-    }
-  });
+
 
   // Test sensor data without authentication
   app.get("/api/test-sensor-data", async (req, res) => {
@@ -636,11 +595,74 @@ async function registerRoutes(app) {
 
   app.get('/api/weather', async (req, res) => {
     try {
-      const apiKey = process.env.OPENWEATHER_API_KEY || '840ac2f9e3319a7c7b9ccac65a713a0a';
+      const apiKey = process.env.OPENWEATHER_API_KEY;
       console.log('OpenWeather API Key:', apiKey ? 'Present' : 'Missing');
       
+      // If no API key, use a free weather API as fallback
       if (!apiKey) {
-        return res.status(500).json({ message: 'OpenWeather API key not configured' });
+        console.log('Using free weather API fallback');
+        let url = '';
+        if (req.query.city) {
+          url = `https://api.open-meteo.com/v1/forecast?latitude=28.6139&longitude=77.2090&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,pressure_msl&timezone=auto`;
+        } else if (req.query.lat && req.query.lon) {
+          url = `https://api.open-meteo.com/v1/forecast?latitude=${req.query.lat}&longitude=${req.query.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,pressure_msl&timezone=auto`;
+        } else {
+          // Default: Delhi, India
+          url = `https://api.open-meteo.com/v1/forecast?latitude=28.6139&longitude=77.2090&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,pressure_msl&timezone=auto`;
+        }
+        
+        console.log('Free Weather API URL:', url);
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`Free weather API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Free Weather API Success:', data.current);
+        
+        // Transform free weather API data to match expected format
+        const weatherCodes = {
+          0: 'Clear sky',
+          1: 'Mainly clear',
+          2: 'Partly cloudy',
+          3: 'Overcast',
+          45: 'Foggy',
+          48: 'Depositing rime fog',
+          51: 'Light drizzle',
+          53: 'Moderate drizzle',
+          55: 'Dense drizzle',
+          61: 'Slight rain',
+          63: 'Moderate rain',
+          65: 'Heavy rain',
+          71: 'Slight snow',
+          73: 'Moderate snow',
+          75: 'Heavy snow',
+          95: 'Thunderstorm'
+        };
+        
+        const transformedData = {
+          location: {
+            name: req.query.city || 'Delhi',
+            country: 'IN',
+            lat: parseFloat(req.query.lat) || 28.6139,
+            lon: parseFloat(req.query.lon) || 77.2090
+          },
+          current: {
+            temp_c: data.current.temperature_2m,
+            temp_f: (data.current.temperature_2m * 9/5) + 32,
+            condition: {
+              text: weatherCodes[data.current.weather_code] || 'Unknown',
+              icon: `https://openweathermap.org/img/wn/01d@2x.png` // Default icon
+            },
+            humidity: data.current.relative_humidity_2m,
+            pressure: data.current.pressure_msl,
+            wind_speed: data.current.wind_speed_10m,
+            wind_deg: 0
+          }
+        };
+        
+        return res.json(transformedData);
       }
       
       let url = '';

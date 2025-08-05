@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -55,7 +56,13 @@ export default function History() {
       startTime: startDate.toISOString(), 
       endTime: endDate.toISOString() 
     }],
-    queryFn: () => fetch(`/api/sensor-data/demo?startTime=${startDate.toISOString()}&endTime=${endDate.toISOString()}`).then(res => res.json()),
+    queryFn: () => 
+      apiRequest('GET', `/api/sensor-data/demo?startTime=${startDate.toISOString()}&endTime=${endDate.toISOString()}`)
+        .then(res => res.json())
+        .catch(err => {
+          console.error('Error fetching historical data:', err);
+          throw new Error('Failed to load historical data');
+        }),
   });
 
   // Process data for charts

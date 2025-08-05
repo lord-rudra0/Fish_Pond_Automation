@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
+import { apiRequest } from "@/lib/queryClient";
 import { useAutoRefresh } from "@/hooks/use-auto-refresh";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -38,17 +39,13 @@ export default function SensorChart() {
 
   const { data: sensorData = [], isLoading, error } = useQuery({
     queryKey: ['/api/sensor-data/range', '24h', timeRange.startTime, timeRange.endTime],
-    queryFn: async () => {
-      const response = await fetch(`/api/sensor-data/range?startTime=${timeRange.startTime}&endTime=${timeRange.endTime}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to fetch sensor data');
-      }
-      return response.json();
-    },
+    queryFn: () => 
+      apiRequest('GET', `/api/sensor-data/range?startTime=${timeRange.startTime}&endTime=${timeRange.endTime}`)
+        .then(res => res.json())
+        .catch(err => {
+          console.error('Error fetching sensor data:', err);
+          throw new Error('Failed to fetch sensor data');
+        }),
     refetchInterval: Math.max(refreshInterval || 30000, 30000), // Minimum 30 seconds
     staleTime: 30000, // Consider data fresh for 30 seconds
   });

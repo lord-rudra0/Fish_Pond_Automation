@@ -118,6 +118,80 @@ async function registerRoutes(app) {
     }
   });
 
+  // Demo sensor data endpoint (used by the client)
+  app.get("/api/sensor-data/demo", async (req, res) => {
+    try {
+      const { startTime, endTime } = req.query;
+      const now = new Date();
+      const endDate = endTime ? new Date(endTime) : now;
+      const startDate = startTime ? new Date(startTime) : new Date(now.getTime() - 24 * 60 * 60 * 1000); // Default to 24h if no range specified
+      
+      // Generate mock data points
+      const dataPoints = [];
+      const timeDiff = endDate - startDate;
+      const numPoints = 24; // Number of data points to generate
+      
+      for (let i = 0; i < numPoints; i++) {
+        const timestamp = new Date(startDate.getTime() + (i * timeDiff / numPoints));
+        dataPoints.push({
+          timestamp: timestamp.toISOString(),
+          ph: 7.0 + (Math.random() - 0.5) * 2, // pH between 6-8
+          waterLevel: 80 + (Math.random() - 0.5) * 20, // Water level between 70-90%
+          temperature: 25 + (Math.random() - 0.5) * 10, // Temperature between 20-30°C
+          nh3: 0.1 + Math.random() * 0.4, // NH3 between 0.1-0.5 ppm
+          turbidity: 5 + Math.random() * 10 // Turbidity between 5-15 NTU
+        });
+      }
+      
+      res.json(dataPoints);
+    } catch (error) {
+      console.error('Demo sensor data error:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Weather endpoint
+  app.get("/api/weather", async (req, res) => {
+    try {
+      const { city, lat, lon } = req.query;
+      let weatherData;
+      
+      if (city) {
+        // Mock weather response for city
+        weatherData = {
+          location: city,
+          temperature: Math.round(20 + Math.random() * 15), // 20-35°C
+          humidity: Math.round(40 + Math.random() * 40), // 40-80%
+          windSpeed: (Math.random() * 10).toFixed(1), // 0-10 m/s
+          description: ['Sunny', 'Partly Cloudy', 'Cloudy', 'Rainy'][Math.floor(Math.random() * 4)],
+          icon: '01d', // Weather icon code
+          timestamp: new Date().toISOString()
+        };
+      } else if (lat && lon) {
+        // Mock weather response for coordinates
+        weatherData = {
+          location: `Lat: ${lat}, Lon: ${lon}`,
+          temperature: Math.round(15 + Math.random() * 20), // 15-35°C
+          humidity: Math.round(30 + Math.random() * 50), // 30-80%
+          windSpeed: (Math.random() * 12).toFixed(1), // 0-12 m/s
+          description: ['Clear', 'Mostly Sunny', 'Partly Cloudy', 'Mostly Cloudy'][Math.floor(Math.random() * 4)],
+          icon: '02d', // Weather icon code
+          timestamp: new Date().toISOString()
+        };
+      } else {
+        return res.status(400).json({ message: 'Either city or lat/lon parameters are required' });
+      }
+      
+      res.json(weatherData);
+    } catch (error) {
+      console.error('Weather API error:', error);
+      res.status(500).json({ 
+        message: 'Error fetching weather data',
+        error: error.message 
+      });
+    }
+  });
+
   // Test sensor data without authentication
   app.get("/api/test-sensor-data", async (req, res) => {
     try {
